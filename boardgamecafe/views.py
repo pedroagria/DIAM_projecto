@@ -9,6 +9,9 @@ def index(request):
 def games(request):
     return render(request, 'boardgamecafe/games.html')
 
+def managegames(request):
+    return render(request, 'boardgamecafe/managegames.html')
+
 def tempband(request):
     return render(request, 'boardgamecafe/tempband.html')
 
@@ -26,3 +29,6 @@ def tempstartpage(request):
 
 def tempstartup(request):
     return render(request, 'boardgamecafe/tempstartup.html')
+
+def tempsocialmedia(request):
+    return render(request, 'boardgamecafe/tempsocialmedia.html')

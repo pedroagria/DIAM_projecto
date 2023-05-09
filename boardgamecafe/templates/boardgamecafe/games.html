@@ -1,4 +1,9 @@
 {% extends "boardgamecafe/index.html" %}
+{% load static %}
+<!-- Backgroud image -->
+{% block header %}
+    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+{% endblock %}
 
 {% block content %}
     <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
