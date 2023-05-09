@@ -4,6 +4,7 @@ from .import views
 app_name = 'boardgamecafe'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('games', views.games, name='games'),
     path('tempband', views.tempband, name='tempband'),
     path('tempcafe', views.tempcafe, name='tempcafe'),
     path('tempfoodblog', views.tempfoodblog, name='tempfoodblog'),

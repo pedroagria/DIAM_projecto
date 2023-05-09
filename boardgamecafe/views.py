@@ -6,6 +6,9 @@ def index(request):
     return render(request, 'boardgamecafe/index.html')
     #return HttpResponse("<h1>Esta é a página de entrada da app boardgamecafe </h1>")
 
+def games(request):
+    return render(request, 'boardgamecafe/games.html')
+
 def tempband(request):
     return render(request, 'boardgamecafe/tempband.html')
 
