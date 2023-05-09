@@ -21,16 +21,24 @@ class BoardGame(models.Model):
     log_date_last_update = models.DateTimeField # adicionei para se saber quando alguém mexeu
 
 class Person(models.Model):
-    # possivelmente associar users a isto
+    # possivelmente associar users a isto e colocar algum tipo de pontos
     name = models.CharField(max_length=100)
     nickname = models.CharField(max_length=50)
-    title = models.CharField(max_length=50)
+    unlocked_titles = models.ManyToManyField('Title', related_name='people')
+    chosen_title = models.CharField(max_length=50)
     email = models.EmailField
     vat = models.IntegerField
     phone_number_regex = RegexValidator(regex=r'^\?1?\d{8,15}$', message ="O número deverá ter o formato: '+3512199999'") # REVER
     phone_number = models.CharField(validators=[phone_number_regex], max_length=16) #blank=true se quisermos que o campo possa ficar vazio
     log_is_active = models.BooleanField
     log_date_created = models.DateTimeField #alterei o signupdate para ficar como este
+    log_date_last_update = models.DateTimeField
+
+class Title(models.Model):
+    title = models.CharField(max_length=50)
+    unlock_conditions = models.TextField
+    log_is_active = models.BooleanField
+    log_date_created = models.DateTimeField
     log_date_last_update = models.DateTimeField
 
 class Comment(models.Model):
