@@ -6,6 +6,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 
 
+from django.core.files.storage import FileSystemStorage
 #from django.http import HttpResponse
 
 # Create your views here.
@@ -31,13 +32,23 @@ def addgame(request):
     number_of_copies = request.POST.get('number_of_copies')
     description = request.POST.get('description')
     link = request.POST.get('link')
-    image = request.POST.get('image')
+    image = request.FILES.get('image')
+    # image = request.POST.get('image')
     if request.POST.get('log_is_active'):
         log_is_active = True
     else:
         log_is_active = False
     if name and release_year and min_players and max_players and min_age and min_playing_time and avg_playing_time and complexity and number_of_copies and description and link and image:
-        boardgame = BoardGame(name=name, release_year=release_year, min_players=min_players, max_players=max_players, min_age=min_age, min_playing_time=min_playing_time, avg_playing_time=avg_playing_time, complexity=complexity, number_of_copies=number_of_copies, description=description, link=link, image=image, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+        boardgame = BoardGame(name=name, release_year=release_year, min_players=min_players, max_players=max_players,
+                              min_age=min_age, min_playing_time=min_playing_time, avg_playing_time=avg_playing_time,
+                              complexity=complexity, number_of_copies=number_of_copies, description=description,
+                              link=link, image="temp", log_is_active=log_is_active, log_date_created=timezone.now(),
+                              log_date_last_update=timezone.now())
+        boardgame.save()
+        fs = FileSystemStorage()
+        filename = fs.save('boardgame_image_' + str(boardgame.id) + '.webp', image)
+        uploaded_file_url = fs.url(filename)
+        boardgame.image = uploaded_file_url
         boardgame.save()
         return HttpResponseRedirect(reverse('boardgamecafe:games'))
     return render(request, 'boardgamecafe/managegame.html', {'error_message': "Error adding new board game. Be sure that all fields are filled correctly."})
@@ -58,7 +69,7 @@ def editgame(request, boardgame_id):
     number_of_copies = request.POST.get('number_of_copies')
     description = request.POST.get('description')
     link = request.POST.get('link')
-    image = request.POST.get('image')
+    image = request.FILES.get('image')
     if request.POST.get('log_is_active'):
         log_is_active = True
     else:
@@ -75,12 +86,16 @@ def editgame(request, boardgame_id):
         boardgame.number_of_copies = number_of_copies
         boardgame.description = description
         boardgame.link = link
-        boardgame.image = image
+        fs = FileSystemStorage()
+        filename = fs.save('boardgame_image_' + str(boardgame.id) + '.webp', image)
+        uploaded_file_url = fs.url(filename)
+        boardgame.image = uploaded_file_url
         log_is_active = log_is_active
         log_date_last_update = timezone.now()
         boardgame.save()
-        return HttpResponseRedirect(reverse('boardgamecafe:mgames'))
-    return HttpResponseRedirect(reverse('boargamecafe:editgame'))  # adicionar mensagem de erro?
+        return HttpResponseRedirect(reverse('boardgamecafe:games'))
+    return render(request, 'boardgamecafe/managegame.html',
+                  {'boardgame_id': boardgame_id, 'error_message': "Error editing board game. Be sure that all fields are filled correctly."})
 
 
 

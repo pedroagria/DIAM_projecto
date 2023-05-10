@@ -8,17 +8,25 @@
 {% block content %}
 <div class="w3-light-grey w3-center" style="padding:128px">
 
-    <h1>ADD NEW BOARD GAME</h1>
-    <p> Fill in the data regarding the new board game to be added </p>
+    {% if boardgame %}
+        <h1>EDIT BOARD GAME</h1>
+        <p> Edit the data of the chosen board game </p>
+    {% else %}
+        <h1>ADD NEW BOARD GAME</h1>
+        <p> Fill in the data regarding the new board game to be added </p>
+    {% endif %}
 
     {% if error_message %}
         <p class="w3-red">{{ error_message }}</p>
     {% endif %}
 
-    {% if boardgame %}
-    {% endif %}
-
-    <form class="form_crude" action="{% url 'boardgamecafe:addgame' %}" method="POST">
+    <form class="form_crude" enctype="multipart/form-data"
+        {% if boardgame %}
+            action="{% url 'boardgamecafe:editgame' boardgame.id %}"
+        {% else %}
+          action="{% url 'boardgamecafe:addgame' %}"
+        {% endif %}
+    method="POST">
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="name" class="form_crude_label">Name</label>
@@ -87,9 +95,7 @@
         <div class="form_crude_item">
             <label for="description" class="form_crude_label">Description</label>
             <textarea maxlength="10000" class="form_crude_input form_crude_input--big" name="description" id="description" placeholder="Enter a description for the board game. (Max. 10000 chars)" required
-            {% if boardgame %}
-                value="{{ boardgame.description }}"
-            {% endif %}></textarea>
+            >{% if boardgame %}"{{ boardgame.description }}{% endif %}</textarea>
         </div>
         <div class="form_crude_item">
             <label for="link" class="form_crude_label">Link</label>
@@ -110,12 +116,15 @@
         <div class="form_crude_item">
             <label for="image" class="form_crude_label">Image</label>
             <label for="image" class="w3-white w3-button">Upload Image</label>
-            <input type="file" accept="image" name="image" id="image" placeholder="Upload game image" onchange="readImgURL(this);" required
+            <input type="file" accept="image" name="image" id="image" placeholder="Upload game image" onchange="readImgURL(this);"
             {% if boardgame %}
-                value="{{ boardgame.link }}"
+                >
+                <img id="boardgame_image" class="w3-third" src="{{ boardgame.image }}">
+            {% else %}
+                required>
+                <img id="boardgame_image" class="w3-third" src="">
+            {% endif %}
 
-            {% endif %}>
-            <img id="boardgame_image" class="w3-third" src="">
         </div>
 {#        <div class="form_crude_item">#}
 {#            <label for="expirydate" class="form_crude_label">Expiration Date</label>#}
@@ -124,7 +133,12 @@
 {#        </div>#}
 
         <div class="form_crude_item">
-            <button class="form_crude_btn w3-button" type="submit">Add Game</button>
+            <button class="form_crude_btn w3-button" type="submit">
+        {% if boardgame %}
+            Edit Game
+        {% else %}
+            Add Game
+        {% endif %}</button>
         </div>
     </form>
  </div>
