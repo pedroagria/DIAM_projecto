@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Homepage</title>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'boardgamecafe/css/style.css' %}" />
+</head>
+
+<header id="home">
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top">
+        <div class="w3-bar w3-white w3-card" id="myNavbar">
+            <a href="#home" class="w3-bar-item w3-button w3-wide">BOARD GAME CAFE</a>
+            <!-- Right-sided navbar links -->
+            <div class="w3-right w3-hide-small">
+                <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
+                <a href="#calendar" class="w3-bar-item w3-button"> CALENDAR</a>
+                <a href="#new_booking" class="w3-bar-item w3-button"> NEW BOOKING</a>
+                <a href="#games" class="w3-bar-item w3-button"> GAMES</a>
+                <a href="#pricing" class="w3-bar-item w3-button"> PRICING</a>
+                <a href="#contact" class="w3-bar-item w3-button"> CONTACT</a>
+                <a href="#sign_in" class="w3-bar-item w3-button"> SIGN IN</a>
+                <a href="#sign_up" class="w3-bar-item w3-button"> SIGN UP</a>
+                <a href="#personal_area" class="w3-bar-item w3-button"> PERSONAL AREA</a>
+                <a href="#log_out" class="w3-bar-item w3-button"> LOG OUT</a>
+            </div>
+        </div>
+    </div>
+    <!-- Backgroud image -->
+    {% block header %}
+        <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+    {% endblock %}
+</header>
+
+<body>
+
+    <!-- About Section -->
+    {% block content %}
+    <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
+        <h3>ABOUT US</h3>
+        <p>Key features of our company</p>
+    </div>
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="w3-center" id="contact" style="padding:128px 16px">
+        <h3>CONTACT</h3>
+        <p>Lets get in touch. Send us a message:</p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/pin_icon.png' %}" > Rua Rodrigues Sampaio 146, 1150-882, Lisbon, PT</p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/phone_icon.png' %}" > +351 987654321</p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/mail_icon.png' %}" > boardgamecafe@mail.com</p>
+        {% block footer %}
+            <img class="img-index" src="{% static 'boardgamecafe/images/location_with_pin2.png' %}" >
+        {% endblock %}
+        <a href="#home" class="w3-button w3-white">To the top</a>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="{% static 'boardgamecafe/js/script.js' %}"></script>
+</body>
+
+</html>

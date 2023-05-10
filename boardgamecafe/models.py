@@ -6,16 +6,17 @@ from django.db import models
 
 class BoardGame(models.Model):
     name = models.CharField(max_length=50)
+    release_year = models.IntegerField(validators=[MaxValueValidator(3000)])
+    min_players = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)])
+    max_players = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)])
+    min_age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(99)])
+    min_playing_time = models.IntegerField(validators=[MinValueValidator(1)])
+    avg_playing_time = models.IntegerField(validators=[MinValueValidator(1)])
+    complexity = models.DecimalField(validators=[MinValueValidator(1), MaxValueValidator(5)], max_digits=3, decimal_places=2)
+    number_of_copies = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField
-    min_players = models.IntegerField(validators=[MinValueValidator(1)])
-    max_players = models.IntegerField(validators=[MinValueValidator(1)])
-    min_age = models.IntegerField(validators=[MinValueValidator(0)])
-    release_year = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3000)])
-    numberOfCopies = models.IntegerField(validators=[MinValueValidator(0)])
-    complexity = models.DecimalField(validators=[MinValueValidator(0), MaxValueValidator(5)], max_digits=3, decimal_places=2)
-    min_playing_time = models.IntegerField(validators=[MinValueValidator(0)])
-    average_playing_time = models.IntegerField(validators=[MinValueValidator(0)])
     link = models.URLField #default 200 character limit (can be changed)
+    image = models.ImageField()  # para adicionar imagens. Talvez seja preciso a Pillow library. We'll see.
     log_is_active = models.BooleanField # mudei o nome de isActive para isto
     log_date_created = models.DateTimeField # adicionei para ficar com histórico de criação
     log_date_last_update = models.DateTimeField # adicionei para se saber quando alguém mexeu

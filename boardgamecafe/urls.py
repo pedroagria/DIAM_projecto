@@ -6,7 +6,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('games', views.games, name='games'),
     # admin
-    path('managegames', views.managegames, name='managegames'),
+    path('addgame', views.addgame, name='addgame'),
+    # path('editgame', views.addeditgame, name='editgame'),
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
     path('tempcafe', views.tempcafe, name='tempcafe'),

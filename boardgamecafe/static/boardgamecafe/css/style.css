@@ -264,31 +264,28 @@ body, html {
     height:auto;
 }
 
-.container_crude {
-  padding-left: 70px;
-  padding_right: 70px;
-  margin-right: 30px;
-  margin-left: 30px;
+ /*Se o label tiver as configurações ele substitui*/
+input[type="file"] {
+  opacity:0;
 }
 
-/*COPIED FOR CRUDE*/
+/* USED FOR CRUSE (ADAPTED FROM WEB) */
 /*@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i&display=swap");*/
 .form_crude {
-  font-family: "Source Sans Pro", sans-serif;
-  font-size: 16px;
+  /*font-family: "Source Sans Pro", sans-serif;*/
+  /*font-size: 16px;*/
   text-align: center;
 }
 
 .form_crude * {
   box-sizing: border-box;
   line-height: 1.5;
-
 }
 
-.form_crude_title {
-  font-size: 2em;
-  font-weight: 600;
-}
+/*.form_crude_title {*/
+/*  font-size: 2em;*/
+/*  font-weight: 600;*/
+/*}*/
 
 .form_crude_item {
   display: flex;
@@ -299,14 +296,18 @@ body, html {
   align-self: flex-start;
 }
 
+.form_crude_item_checkbox {
+  flex-direction: row;
+}
+
 .form_crude_label {
+  /*considerar tirar o font weight - ver com a claudia o que ela prefere*/
   font-weight: 600;
   padding: 10px 0;
 }
 
 .form_crude_input {
   -webkit-appearance: none;
-
   width: 100%;
   max-width: 425px;
 
@@ -315,13 +316,21 @@ body, html {
 
   padding: 0.8em;
   font-size: 0.9em;
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Raleway", sans-serif;
 
   outline: none;
   border: 1px solid #dddddd;
   border-radius: 4px;
   background: #f9f9f9;
   transition: background 0.25s, border-color 0.25s, color 0.25s;
+}
+
+.form_crude_input--small {
+  max-width: 300px;
+}
+
+.form_crude_input--big {
+  max-width: 1300px;
 }
 
 .form_crude_input:focus {
@@ -353,32 +362,51 @@ body, html {
   visibility: visible;
 }
 
-.form_crude_input--small {
-  max-width: 250px;
-}
-
 textarea.form_crude_input {
-  resize: none;
+  /*resize: none;*/
   min-height: 200px;
 }
 
 .form_crude_btn {
-  font-family: "Source Sans Pro", sans-serif;
+  /*font-family: "Railway", sans-serif;*/
   font-weight: 600;
   font-size: 1.1em;
   padding: 10px 16px;
   margin: 10px 0;
-
   color: #ffffff;
   background: #14b64a;
-  border: 2px solid #0fa942;
-  border-radius: 5px;
-
-  cursor: pointer;
-  outline: none;
+  /*border: 2px solid #0fa942;*/
+  /*border-radius: 5px;*/
+  /*cursor: pointer;*/
+  /*outline: none;*/
+  /*text-align: center;*/
 }
 
 .form_crude_btn:active {
   background: #0fa942;
+}
+
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.5); /* IE */
+  -moz-transform: scale(1.5); /* FF */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  transform: scale(1.5);
+  margin: 15px;
+  margin-bottom: 35px;
+  /*vertical-align: -10px;*/
+  /*padding: 10px 10px 10px;*/
+  /*vertical-align: -10px;*/
+}
+
+/* Might want to wrap a span around your checkbox text */
+.checkboxtext
+{
+  /* Checkbox text */
+  font-size: 110%;
+  display: inline;
 }
 

@@ -1,0 +1,96 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+<!-- Backgroud image -->
+{% block header %}
+    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+{% endblock %}
+
+{% block content %}
+<div class="w3-light-grey w3-center" style="padding:128px">
+
+    <h1>ADD NEW BOARD GAME</h1>
+    <p> Fill in the data regarding the new board game to be added </p>
+
+    <form class="form_crude" action="{$ url 'boardgamecafe:addgame' %}" method="POST">
+        {% csrf_token %}
+        <div class="form_crude_item">
+            <label for="name" class="form_crude_label">Name</label>
+            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the board game name" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="release_year" class="form_crude_label">Year of release</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="release_year" id="release_year" max="3000" placeholder="Enter year of release (Max. 3000)" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="min_players" class="form_crude_label">Minimum number of players</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="min_players" id="min_players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="max_players" class="form_crude_label">Maximum number of players</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="max_players" id="max_players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="min_age" class="form_crude_label">Minimum player age</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="min_age" id="min_age" min="0" max="99" placeholder="Enter age in years (Max. 99)" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="min_playing_time" class="form_crude_label">Minimum playing time</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="min_playing_time" id="min_playing_time" min="1" placeholder="Enter playing time in minutes" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="avg_playing_time" class="form_crude_label">Average playing time</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="avg_playing_time" id="avg_playing_time" min="1" placeholder="Enter playing time in minutes" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="complexity" class="form_crude_label">Complexity</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="complexity" id="complexity" min="1" max="5" step=".01" placeholder="Enter complexity rating (1.00 to 5.00)" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="number_of_copies" class="form_crude_label">Owned copies</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="number_of_copies" id="number_of_copies" min="0" placeholder="Enter the number of owned copies" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="description" class="form_crude_label">Description</label>
+            <textarea maxlength="10000" class="form_crude_input form_crude_input--big" name="description" id="description" placeholder="Enter a description for the board game. (Max. 10000 chars)" required></textarea>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="link" class="form_crude_label">Link</label>
+            <input type="url" class="form_crude_input form_crude_input--big" name="link" id="link" placeholder="Enter reference link" required>
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="log_is_active" class="form_crude_label">The game is active for public use</label>
+            <input type="checkbox" name="log_is_active" id="log_is_active">
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+        <div class="form_crude_item">
+            <label for="image" class="form_crude_label">Image</label>
+            <label for="image" class="w3-white w3-button">Upload Image</label>
+            <input type="file" accept="image" name="image" id="image" placeholder="Upload game image" onchange="readImgURL(this);" required>
+            <span class="form_crude_error">A sample error message</span>
+            <img id="boardgame_image" class="w3-third" src="">
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+{#        <div class="form_crude_item">#}
+{#            <label for="expirydate" class="form_crude_label">Expiration Date</label>#}
+{#            <input type="date" class="form_crude_input form_crude_input--small" name="expirydate" id="expirydate" placeholder="Enter an expiration date">#}
+{#            <span class="form_crude_error">A sample error message</span>#}
+{#        </div>#}
+
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button" type="submit">Add Game</button>
+        </div>
+    </form>
+ </div>
+ {% endblock %}
+

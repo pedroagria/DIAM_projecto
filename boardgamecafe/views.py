@@ -1,4 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from .models import BoardGame
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.utils import timezone
 #from django.http import HttpResponse
 
 # Create your views here.
@@ -9,8 +13,71 @@ def index(request):
 def games(request):
     return render(request, 'boardgamecafe/games.html')
 
-def managegames(request):
-    return render(request, 'boardgamecafe/managegames.html')
+def addgame(request):
+    # return render(request, 'boardgamecafe/addeditgame.html')
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/addeditgame.html')
+    name = request.POST.get('name')
+    release_year = request.POST.get('release_year')
+    min_players = request.POST.get('min_players')
+    max_players = request.POST.get('max_players')
+    min_age = request.POST.get('min_age')
+    min_playing_time = request.POST.get('min_playing_time')
+    avg_playing_time = request.POST.get('avg_playing_time')
+    complexity = request.POST.get('complexity')
+    number_of_copies = request.POST.get('number_of_copies')
+    description = request.POST.get('description')
+    link = request.POST.get('link')
+    image = request.POST.get('image')
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if name and release_year and min_players and max_players and min_age and min_playing_time and avg_playing_time and complexity and number_of_copies and description and link and image:
+        boardgame = BoardGame(name=name, release_year=release_year, min_players=min_players, max_players=max_players, min_age=min_age, min_playing_time=min_playing_time, avg_playing_time=avg_playing_time, complexity=complexity, number_of_copies=number_of_copies, description=description, link=link, image=image, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+        boardgame.save()
+        return HttpResponseRedirect(reverse('boardgamecafe:managegames'))
+    return HttpResponseRedirect(reverse('boargamecafe:addeditgame')) # adicionar mensagem de erro?
+
+# AINDA NAO FUNCIONAL E MAIS PARA REFERENCIA
+def editgame(request, boardgame_id):
+    boardgame = get_object_or_404(BoardGame, pk=boardgame_id)
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/addeditgame.html')
+    name = request.POST.get('name')
+    release_year = request.POST.get('release_year')
+    min_players = request.POST.get('min_players')
+    max_players = request.POST.get('max_players')
+    min_age = request.POST.get('min_age')
+    min_playing_time = request.POST.get('min_playing_time')
+    avg_playing_time = request.POST.get('avg_playing_time')
+    complexity = request.POST.get('complexity')
+    number_of_copies = request.POST.get('number_of_copies')
+    description = request.POST.get('description')
+    link = request.POST.get('link')
+    image = request.POST.get('image')
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if name and release_year and min_players and max_players and min_age and min_playing_time and avg_playing_time and complexity and number_of_copies and description and link and image:
+        boardgame.name = name
+        boardgame.release_year = release_year
+        boardgame.min_players = min_players
+        boardgame.max_players = max_players
+        boardgame.min_age = min_age
+        boardgame.min_playing_time = min_playing_time
+        boardgame.avg_playing_time = avg_playing_time
+        boardgame.complexity = complexity
+        boardgame.number_of_copies = number_of_copies
+        boardgame.description = description
+        boardgame.link = link
+        boardgame.image = image
+        log_is_active = log_is_active
+        log_date_last_update = timezone.now()
+        boardgame.save()
+        return HttpResponseRedirect(reverse('boardgamecafe:managegames'))
+    return HttpResponseRedirect(reverse('boargamecafe:addeditgame'))  # adicionar mensagem de erro?
 
 def tempband(request):
     return render(request, 'boardgamecafe/tempband.html')
