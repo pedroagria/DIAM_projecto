@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Homepage</title>
+    {% block title %}
+        <title>Homepage</title>
+    {% endblock %}
     <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'boardgamecafe/css/style.css' %}" />

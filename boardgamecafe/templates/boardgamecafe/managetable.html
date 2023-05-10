@@ -1,0 +1,55 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Add Table</title>
+{% endblock %}
+<!-- Backgroud image -->
+{% block header %}
+    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+{% endblock %}
+
+{% block content %}
+<div class="w3-light-grey w3-center" style="padding:128px">
+
+    <h1>ADD NEW TABLE</h1>
+    <p> Fill in the data regarding the new table to be added </p>
+
+    {% if error_message %}
+        <p class="w3-red">{{ error_message }}</p>
+    {% endif %}
+
+    {% if table %}
+    {% endif %}
+
+    <form class="form_crude" action="{% url 'boardgamecafe:addtable' %}" method="POST">
+        {% csrf_token %}
+        <div class="form_crude_item">
+            <label for="name" class="form_crude_label">Name</label>
+            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the table name" required
+            {% if table %}
+                value="{{ table.name }}"
+            {% endif %}>
+{#            <span class="form_crude_error">A sample error message</span>#}
+        </div>
+        <div class="form_crude_item">
+            <label for="capacity" class="form_crude_label">Minimum number of players</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="capacity" id="capacity" min="1" max="99" placeholder="Enter table capacity (Max. 99)" required
+            {% if table %}
+                value="{{ table.capacity }}"
+            {% endif %}>
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="log_is_active" class="form_crude_label">The table is active for public use</label>
+            <input type="checkbox" name="log_is_active" id="log_is_active"
+            {% if table %}
+                {%  if table.log_is_active %}
+                    checked
+                {% endif %}
+            {% endif %}>
+        </div>
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button" type="submit">Add Table</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

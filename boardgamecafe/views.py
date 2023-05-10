@@ -1,8 +1,11 @@
 from django.shortcuts import get_object_or_404, render
-from .models import BoardGame
+from .models import BoardGame, Calendar, Table
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
+from datetime import datetime, timedelta
+
+
 #from django.http import HttpResponse
 
 # Create your views here.
@@ -79,6 +82,61 @@ def editgame(request, boardgame_id):
         return HttpResponseRedirect(reverse('boardgamecafe:mgames'))
     return HttpResponseRedirect(reverse('boargamecafe:editgame'))  # adicionar mensagem de erro?
 
+
+
+
+
+def addcalendar(request):
+    # TODO - Falta validações tanto na view como no html
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/managecalendar.html')
+    startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
+    enddate = datetime.strptime(request.POST.get('enddate'), '%Y-%m-%d').date()
+    opentime = datetime.strptime(request.POST.get('opentime'), '%H:%M').time()
+    closetime = datetime.strptime(request.POST.get('closetime'), '%H:%M').time()
+
+    weekdays = [False] * 7
+    if request.POST.get('monday'):
+        weekdays[0] = True
+    if request.POST.get('tuesday'):
+        weekdays[1] = True
+    if request.POST.get('wednesday'):
+        weekdays[2] = True
+    if request.POST.get('thursday'):
+        weekdays[3] = True
+    if request.POST.get('friday'):
+        weekdays[4] = True
+    if request.POST.get('saturday'):
+        weekdays[5] = True
+    if request.POST.get('sunday'):
+        weekdays[6] = True
+
+    numbers_days = (enddate-startdate).days + 1
+    list_dates = [startdate + timedelta(days=x) for x in range(numbers_days)]
+    for i in list_dates:
+        i_weekday = i.weekday() # segunda é 0 e domingo é 6
+        if weekdays[i_weekday]:
+            calendar = Calendar(date=i, open_time=opentime, close_time=closetime, log_is_active=True, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+            calendar.save()
+    return render(request, 'boardgamecafe/managecalendar.html')
+
+def addtable(request):
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/managetable.html')
+    name = request.POST.get('name')
+    capacity = request.POST.get('capacity')
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if name and capacity:
+        table = Table(name=name, capacity=capacity, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+        table.save()
+        return HttpResponseRedirect(reverse('boardgamecafe:index'))
+    return render(request, 'boardgamecafe/managetable.html', {'error_message': "Error adding new table. Be sure that all fields are filled correctly."})
+
+
+# Templates
 def tempband(request):
     return render(request, 'boardgamecafe/tempband.html')
 
