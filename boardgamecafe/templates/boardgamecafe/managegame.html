@@ -104,16 +104,18 @@
             {% if boardgame %}
                 {%  if boardgame.log %}
                     checked
-                {% endif %}>
+                {% endif %}
             {% endif %}>
         </div>
         <div class="form_crude_item">
             <label for="image" class="form_crude_label">Image</label>
             <label for="image" class="w3-white w3-button">Upload Image</label>
-            <input type="file" accept="image" name="image" id="image" placeholder="Upload game image" onchange="readImgURL(this);" required>
-            <span class="form_crude_error">A sample error message</span>
+            <input type="file" accept="image" name="image" id="image" placeholder="Upload game image" onchange="readImgURL(this);" required
+            {% if boardgame %}
+                value="{{ boardgame.link }}"
+
+            {% endif %}>
             <img id="boardgame_image" class="w3-third" src="">
-            <span class="form_crude_error">A sample error message</span>
         </div>
 {#        <div class="form_crude_item">#}
 {#            <label for="expirydate" class="form_crude_label">Expiration Date</label>#}
