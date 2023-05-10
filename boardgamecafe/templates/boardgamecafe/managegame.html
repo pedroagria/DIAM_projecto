@@ -11,7 +11,7 @@
     <h1>ADD NEW BOARD GAME</h1>
     <p> Fill in the data regarding the new board game to be added </p>
 
-    <form class="form_crude" action="{$ url 'boardgamecafe:addgame' %}" method="POST">
+    <form class="form_crude" action="{% url 'boardgamecafe:addgame' %}" method="POST">
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="name" class="form_crude_label">Name</label>
