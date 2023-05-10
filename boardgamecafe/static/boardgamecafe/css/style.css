@@ -166,7 +166,7 @@ h1,h2,h3,h4,h5,h6{font-family:"Segoe UI",Arial,sans-serif;font-weight:400;margin
 /*.w3-pink,.w3-hover-pink:hover{color:#fff!important;background-color:#e91e63!important}*/
 /*.w3-purple,.w3-hover-purple:hover{color:#fff!important;background-color:#9c27b0!important}*/
 /*.w3-deep-purple,.w3-hover-deep-purple:hover{color:#fff!important;background-color:#673ab7!important}*/
-/*.w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}*/
+.w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
 /*.w3-sand,.w3-hover-sand:hover{color:#000!important;background-color:#fdf5e6!important}*/
 /*.w3-teal,.w3-hover-teal:hover{color:#fff!important;background-color:#009688!important}*/
 /*.w3-yellow,.w3-hover-yellow:hover{color:#000!important;background-color:#ffeb3b!important}*/
@@ -341,26 +341,26 @@ input[type="file"] {
   color: #bbbbbb;
 }
 
-.form_crude_input--error {
-  color: #d50000;
-  background: #fff8f8;
-  border-color: #d50000;
-}
+/*.form_crude_input--error {*/
+/*  color: #d50000;*/
+/*  background: #fff8f8;*/
+/*  border-color: #d50000;*/
+/*}*/
 
-.form_crude_input--error::placeholder {
-  color: #ffbfbf;
-}
+/*.form_crude_input--error::placeholder {*/
+/*  color: #ffbfbf;*/
+/*}*/
 
-.form_crude_error {
-  padding-top: 10px;
-  color: #d50000;
-  font-size: 0.9em;
-  visibility: hidden;
-}
+/*.form_crude_error {*/
+/*  padding-top: 10px;*/
+/*  color: #d50000;*/
+/*  font-size: 0.9em;*/
+/*  visibility: hidden;*/
+/*}*/
 
-.form_crude_input--error + .form__error {
-  visibility: visible;
-}
+/*.form_crude_input--error + .form__error {*/
+/*  visibility: visible;*/
+/*}*/
 
 textarea.form_crude_input {
   /*resize: none;*/
