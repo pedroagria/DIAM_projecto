@@ -125,7 +125,7 @@ def addcalendar(request):
         weekdays[5] = True
     if request.POST.get('sunday'):
         weekdays[6] = True
-
+    print(weekdays)
     numbers_days = (enddate-startdate).days + 1
     list_dates = [startdate + timedelta(days=x) for x in range(numbers_days)]
     for i in list_dates:
