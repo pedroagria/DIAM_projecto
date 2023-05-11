@@ -1,23 +1,19 @@
 {% extends "boardgamecafe/template.html" %}
 {% load static %}
 {% block title %}
-    <title>Add Calendar</title>
-{% endblock %}
-<!-- Backgroud image -->
-{% block header %}
-    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+    <title>Calendar</title>
 {% endblock %}
 
 {% block content %}
 <div class="w3-light-grey w3-center" style="padding:128px">
-    <h1>ADD NEW DATES</h1>
+    <h1>ADD NEW DATES / REMOVE DATES</h1>
     <p> Fill in the data regarding the new dates to be added </p>
 
-    <form class="form_crude" action="{% url 'boardgamecafe:addcalendar' %}" method="POST">
+    <form class="form_crude" action="{% url 'boardgamecafe:addremovecalendar' %}" method="POST">
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="startdate" class="form_crude_label">Start Date</label>
-            <input type="date" class="form_crude_input form_crude_input--small" name="startdate" id="startdate" required>
+            <input type="date" class="form_crude_input form_crude_input--small" name="startdate" id="startdate" required onBlur="endDateBiggerThanStartDate()">
 {#            <span class="form_crude_error">A sample error message</span>#}
         </div>
         <div class="form_crude_item">
@@ -27,12 +23,12 @@
         </div>
         <div class="form_crude_item">
             <label for="opentime" class="form_crude_label">Open Time</label>
-            <input type="time" class="form_crude_input form_crude_input--small" name="opentime" id="opentime" required>
+            <input type="time" class="form_crude_input form_crude_input--small" name="opentime" id="opentime" required onBlur="closeTimeBiggerThanOpenTime()">
 {#            <span class="form_crude_error">A sample error message</span>#}
         </div>
         <div class="form_crude_item">
             <label for="closetime" class="form_crude_label">Close Time</label>
-            <input type="time" class="form_crude_input form_crude_input--small" name="closetime" id="closetime" required>
+            <input type="time" class="form_crude_input form_crude_input--small" name="closetime" id="closetime" required max="24:00">
 {#            <span class="form_crude_error">A sample error message</span>#}
         </div>
         <div class="form_crude_item form_crude_item_checkbox">
@@ -65,10 +61,66 @@
             <input type="checkbox" name="log_is_active" id="log_is_active">
         </div>
         <div class="form_crude_item">
-            <button class="form_crude_btn w3-button" type="submit">Add Dates</button>
+            <button class="form_crude_btn w3-button" type="submit" id="submit">Add Dates</button>
         </div>
     </form>
 
-
 </div>
+{% endblock %}
+
+{% block functions %}
+    <script>
+        {# Definir Today como a data mínima para Start Date #}
+        document.getElementById("startdate").min = new Date().toISOString().split("T")[0];
+        {# Garante que End Date não é inferior à Start Date #}
+        function endDateBiggerThanStartDate() {
+            var minToDate = document.getElementById("startdate").value;
+            document.getElementById("enddate").setAttribute("min", minToDate);
+        }
+        {# Permite apenas horas certas para Open Time #}
+        const openTimeInput = document.getElementById('opentime');
+        openTimeInput.addEventListener('input', (e) => {
+          let hour = e.target.value.split(':')[0]
+          e.target.value = `${hour}:00`
+        })
+        {# Permite apenas horas certas para Close Time #}
+        const closeTimeInput = document.getElementById('closetime');
+        closeTimeInput.addEventListener('input', (e) => {
+          let hour = e.target.value.split(':')[0]
+          e.target.value = `${hour}:00`
+        })
+        {# Garante que Open Time não é inferior à Close Time #}
+        function closeTimeBiggerThanOpenTime() {
+            var minToDate = document.getElementById("opentime").value;
+            document.getElementById("closetime").setAttribute("min", minToDate);
+        }
+        {# Bloquear Open Time, Close Time e Weekdays quando é para remover datas e mudar nome do botão #}
+        $(document).ready(function () {
+            $("#log_is_active").click(function() {
+               if($(this).is(':checked')) {
+                   $("#opentime").prop("disabled", true);
+                   $("#closetime").prop("disabled", true);
+                   $("#monday").prop("disabled", true);
+                   $("#tuesday").prop("disabled", true);
+                   $("#wednesday").prop("disabled", true);
+                   $("#thursday").prop("disabled", true);
+                   $("#friday").prop("disabled", true);
+                   $("#saturday").prop("disabled", true);
+                   $("#sunday").prop("disabled", true);
+                   $("#submit").text('Remove Dates');
+               } else {
+                   $("#opentime").prop("disabled", false);
+                   $("#closetime").prop("disabled", false);
+                   $("#monday").prop("disabled", false);
+                   $("#tuesday").prop("disabled", false);
+                   $("#wednesday").prop("disabled", false);
+                   $("#thursday").prop("disabled", false);
+                   $("#friday").prop("disabled", false);
+                   $("#saturday").prop("disabled", false);
+                   $("#sunday").prop("disabled", false);
+                   $("#submit").text('Add Dates')
+               }
+            });
+        });
+    </script>
 {% endblock %}

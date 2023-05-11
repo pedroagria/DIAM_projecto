@@ -1,27 +1,31 @@
 {% extends "boardgamecafe/template.html" %}
 {% load static %}
 {% block title %}
-    <title>Add Table</title>
-{% endblock %}
-<!-- Backgroud image -->
-{% block header %}
-    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+    <title>Table</title>
 {% endblock %}
 
 {% block content %}
 <div class="w3-light-grey w3-center" style="padding:128px">
 
-    <h1>ADD NEW TABLE</h1>
-    <p> Fill in the data regarding the new table to be added </p>
+    {% if table %}
+        <h1>EDIT TABLE</h1>
+        <p> Edit the data of the chosen table </p>
+    {% else %}
+        <h1>ADD NEW TABLE</h1>
+        <p> Fill in the data regarding the new table to be added </p>
+    {% endif %}
 
     {% if error_message %}
         <p class="w3-red">{{ error_message }}</p>
     {% endif %}
 
-    {% if table %}
-    {% endif %}
-
-    <form class="form_crude" action="{% url 'boardgamecafe:addtable' %}" method="POST">
+    <form class="form_crude"
+          {% if table %}
+            action="{% url 'boardgamecafe:edittable' table.id %}"
+          {% else %}
+            action="{% url 'boardgamecafe:addtable' %}"
+          {% endif %}
+          method="POST">
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="name" class="form_crude_label">Name</label>
@@ -48,7 +52,13 @@
             {% endif %}>
         </div>
         <div class="form_crude_item">
-            <button class="form_crude_btn w3-button" type="submit">Add Table</button>
+            <button class="form_crude_btn w3-button" type="submit">
+                {% if table %}
+                    Edit Table
+                {% else %}
+                    Add Table
+                {% endif %}
+            </button>
         </div>
     </form>
 </div>
