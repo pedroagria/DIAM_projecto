@@ -1,33 +1,43 @@
 {% extends "boardgamecafe/template.html" %}
 {% load static %}
 <!-- Backgroud image -->
-{% block header %}
-    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
-{% endblock %}
 
 {% block content %}
-    <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
+    <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="boardgame_list">
 
         <h1>GAME LIST</h1>
-        <!-- TODO - Fazer o for para automatizar a página -->
-        <div class="w3-center" style="margin-top:64px">
-            <div class="w3-third">
-                <!-- TODO - Falta a imagem do jogo -->
-                <p class="w3-large">Responsive</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
-            </div>
-            <div class="w3-third">
-                <!-- TODO - Falta a imagem do jogo -->
-                <p class="w3-large">Passion</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
-            </div>
-            <div class="w3-third">
-                <!-- TODO - Falta a imagem do jogo -->
-                <p class="w3-large">Design</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
-            </div>
+        <div class="w3-quarter">
+            <label for="name" class="form_crude_label">NAME</label>
+            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" onchange="filterBoardGames(boardgames)" placeholder="Enter name to search">
+        </div>
+        <div class="w3-quarter">
+            <label for="players" class="form_crude_label w3-center">NR OF PLAYERS</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" placeholder="Players">
+        </div>
+        <div class="w3-quarter">
+            <label for="age" class="form_crude_label">MIN PLAYER AGE</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="age" id="age" min="1" max="99" placeholder="Age">
+        </div>
+        <div class="w3-quarter">
+            <label for="players" class="form_crude_label">TIME AVAILABLE</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" placeholder="Minutes">
         </div>
 
+        <br>
+
+    {% if boardgames %}
+        <div class="w3-center" style="margin-top:64px">
+        {% for boardgame in boardgames %}
+           <div class="w3-third list-container">
+                <img class="image-list" src="{{ boardgame.image }}">
+                <h3 class="text-list"> {{ boardgame.name }}</h3>
+{#                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>#}
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+         <p> Currently, there are no available games. </p>
+    {% endif %}
     </div>
 {% endblock %}
 

@@ -1,13 +1,9 @@
 {% extends "boardgamecafe/template.html" %}
 {% load static %}
-<!-- Backgroud image -->
-{% block header %}
-    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
-{% endblock %}
 
 {% block content %}
-<div class="w3-light-grey w3-center" style="padding:128px">
 
+<div class="w3-light-grey w3-center" style="padding:128px">
     {% if boardgame %}
         <h1>EDIT BOARD GAME</h1>
         <p> Edit the data of the chosen board game </p>

@@ -12,8 +12,10 @@ def index(request):
     #return HttpResponse("<h1>Esta é a página de entrada da app boardgamecafe </h1>")
 
 def games(request):
+    if BoardGame.objects.all().count() > 0:
+        boardgames = BoardGame.objects.all()
+        return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
     return render(request, 'boardgamecafe/games.html')
-
 def addgame(request):
     # return render(request, 'boardgamecafe/managegame.html')
     if not request.method == 'POST':
