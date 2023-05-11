@@ -1,0 +1,74 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Add Calendar</title>
+{% endblock %}
+<!-- Backgroud image -->
+{% block header %}
+    <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+{% endblock %}
+
+{% block content %}
+<div class="w3-light-grey w3-center" style="padding:128px">
+    <h1>ADD NEW DATES</h1>
+    <p> Fill in the data regarding the new dates to be added </p>
+
+    <form class="form_crude" action="{% url 'boardgamecafe:addcalendar' %}" method="POST">
+        {% csrf_token %}
+        <div class="form_crude_item">
+            <label for="startdate" class="form_crude_label">Start Date</label>
+            <input type="date" class="form_crude_input form_crude_input--small" name="startdate" id="startdate" required>
+{#            <span class="form_crude_error">A sample error message</span>#}
+        </div>
+        <div class="form_crude_item">
+            <label for="enddate" class="form_crude_label">End Date</label>
+            <input type="date" class="form_crude_input form_crude_input--small" name="enddate" id="enddate" required>
+{#            <span class="form_crude_error">A sample error message</span>#}
+        </div>
+        <div class="form_crude_item">
+            <label for="opentime" class="form_crude_label">Open Time</label>
+            <input type="time" class="form_crude_input form_crude_input--small" name="opentime" id="opentime" required>
+{#            <span class="form_crude_error">A sample error message</span>#}
+        </div>
+        <div class="form_crude_item">
+            <label for="closetime" class="form_crude_label">Close Time</label>
+            <input type="time" class="form_crude_input form_crude_input--small" name="closetime" id="closetime" required>
+{#            <span class="form_crude_error">A sample error message</span>#}
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label class="form_crude_label">Select the weekdays</label>
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="monday" class="form_crude_label">Monday</label>
+            <input type="checkbox" name="monday" id="monday">
+
+            <label for="tuesday" class="form_crude_label">Tuesday</label>
+            <input type="checkbox" name="tuesday" id="tuesday">
+
+            <label for="wednesday" class="form_crude_label">Wednesday</label>
+            <input type="checkbox" name="wednesday" id="wednesday">
+
+            <label for="thursday" class="form_crude_label">Thursday</label>
+            <input type="checkbox" name="thursday" id="thursday">
+
+            <label for="friday" class="form_crude_label">Friday</label>
+            <input type="checkbox" name="friday" id="friday">
+
+            <label for="saturday" class="form_crude_label">Saturday</label>
+            <input type="checkbox" name="saturday" id="saturday">
+
+            <label for="sunday" class="form_crude_label">Sunday</label>
+            <input type="checkbox" name="sunday" id="sunday">
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="log_is_active" class="form_crude_label">Is it to remove from calendar?</label>
+            <input type="checkbox" name="log_is_active" id="log_is_active">
+        </div>
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button" type="submit">Add Dates</button>
+        </div>
+    </form>
+
+
+</div>
+{% endblock %}

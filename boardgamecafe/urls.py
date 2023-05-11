@@ -9,6 +9,8 @@ urlpatterns = [
     path('addgame', views.addgame, name='addgame'),
     path('editgame/<int:boardgame_id>', views.editgame, name='editgame'),
     # path('editgame', views.addeditgame, name='editgame'),
+    path('addcalendar', views.addcalendar, name='addcalendar'),
+    path('addtable', views.addtable, name='addtable'),
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
     path('tempcafe', views.tempcafe, name='tempcafe'),

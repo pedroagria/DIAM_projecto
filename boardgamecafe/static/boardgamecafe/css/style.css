@@ -413,7 +413,7 @@ input[type=checkbox]
   -o-transform: scale(1.5); /* Opera */
   transform: scale(1.5);
   margin: 15px;
-  margin-bottom: 35px;
+  margin-bottom: 35px; /* No addcalendar, fica melhor com isso comentado */
   /*vertical-align: -10px;*/
   /*padding: 10px 10px 10px;*/
   /*vertical-align: -10px;*/
