@@ -2,44 +2,81 @@
 {% load static %}
 <!-- Backgroud image -->
 
+# TODO - Acabar isto: terminar a função do search, meter apenas 9 jogos de cada vez com botões na parte inferior
 {% block content %}
     <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="boardgame_list">
 
         <h1>GAME LIST</h1>
-        <div class="w3-quarter">
-            <label for="name" class="form_crude_label">NAME</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" onchange="filterBoardGames(boardgames)" placeholder="Enter name to search">
-        </div>
-        <div class="w3-quarter">
-            <label for="players" class="form_crude_label w3-center">NR OF PLAYERS</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" placeholder="Players">
-        </div>
-        <div class="w3-quarter">
-            <label for="age" class="form_crude_label">MIN PLAYER AGE</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="age" id="age" min="1" max="99" placeholder="Age">
-        </div>
-        <div class="w3-quarter">
-            <label for="players" class="form_crude_label">TIME AVAILABLE</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" placeholder="Minutes">
-        </div>
 
-        <br>
-
-    {% if boardgames %}
-        <div class="w3-center" style="margin-top:64px">
-        {% for boardgame in boardgames %}
-           <div class="w3-third list-container">
-                <img class="image-list" src="{{ boardgame.image }}">
-                <h3 class="text-list"> {{ boardgame.name }}</h3>
-{#                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>#}
+        <div id="search_bar">
+            <div class="w3-quarter">
+                <label for="name" class="form_crude_label form_crude_item">NAME</label>
+                <input type="text" maxlength="50" class="form_crude_input form_crude_input--small" name="name" id="name" onkeyup="filterBoardGames('{{ boardgames }}', pageIndex)" placeholder="Enter name to search">
             </div>
-        {% endfor %}
+            <div class="w3-quarter">
+                <label for="players" class="form_crude_label form_crude_item">NR OF PLAYERS</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" onkeyup="filterBoardGames('{{ boardgames }}', pageIndex)" placeholder="Players">
+            </div>
+            <div class="w3-quarter">
+                <label for="age" class="form_crude_label form_crude_item">MIN PLAYER AGE</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="age" id="age" min="1" max="99" onkeyup="filterBoardGames('{{ boardgames }}', pageIndex)" placeholder="Age">
+            </div>
+            <div class="w3-quarter">
+                <label for="players" class="form_crude_label form_crude_item">TIME AVAILABLE</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="time" id="time" min="1" max="99" onkeyup="filterBoardGames('{{ boardgames }}', pageIndex)" placeholder="Minutes">
+            </div>
         </div>
-    {% else %}
-         <p> Currently, there are no available games. </p>
-    {% endif %}
+
+        <p id="no_games"> Currently, there are no available games. </p>
+        <div class="w3-center" style="margin-top:64px" id="boardgames_grid">
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list" id="name_text2"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+            <div class="w3-third list-container">
+                <img class="image-list" src="">
+                <h3 class="text-list"></h3>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
-{% block footer %}
+{% block functions %}
+    <script>
+        var pageIndex = 1;
+        $(document).ready(function(event) {
+            filterBoardGames('{{ boardgames | safe }}', 1);
+        });
+    </script>
 {% endblock %}
+
+
+

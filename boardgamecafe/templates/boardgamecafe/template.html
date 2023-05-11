@@ -19,7 +19,7 @@
                 <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
                 <a href="#calendar" class="w3-bar-item w3-button"> CALENDAR</a>
                 <a href="#new_booking" class="w3-bar-item w3-button"> NEW BOOKING</a>
-                <a href="#games" class="w3-bar-item w3-button"> GAMES</a>
+                <a href={% url 'boardgamecafe:games' %} class="w3-bar-item w3-button"> GAMES</a>
                 <a href="#pricing" class="w3-bar-item w3-button"> PRICING</a>
                 <a href="#contact" class="w3-bar-item w3-button"> CONTACT</a>
                 <a href="#sign_in" class="w3-bar-item w3-button"> SIGN IN</a>
@@ -59,6 +59,9 @@
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'boardgamecafe/js/script.js' %}"></script>
+
+    {% block functions %}
+    {% endblock %}
 </body>
 
 </html>

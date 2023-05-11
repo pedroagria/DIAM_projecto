@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404, render
 from .models import BoardGame, Calendar, Table
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.core import serializers
+import json
 
 
 from django.core.files.storage import FileSystemStorage
@@ -15,10 +17,22 @@ def index(request):
     #return HttpResponse("<h1>Esta é a página de entrada da app boardgamecafe </h1>")
 
 def games(request):
-    if BoardGame.objects.all().count() > 0:
-        boardgames = BoardGame.objects.all()
-        return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
-    return render(request, 'boardgamecafe/games.html')
+    # if BoardGame.objects.all().count() > 0:
+    # boardgames = BoardGame.objects.all()
+    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
+    # return render(request, 'boardgamecafe/games.html')
+    all_boardgames = BoardGame.objects.all()
+    boardgames_list = []
+    for boardgame in all_boardgames:
+        # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
+        new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__()}
+        boardgames_list.append(new_boardgame)
+    return render(request, 'boardgamecafe/games.html', {'boardgames': json.dumps(boardgames_list)})
+    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames_list})
+    #
+    # boardgames_json = serializers.serialize('json', boardgames)
+    # return
+
 def addgame(request):
     # return render(request, 'boardgamecafe/managegame.html')
     if not request.method == 'POST':
