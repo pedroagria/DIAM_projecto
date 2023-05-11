@@ -10,9 +10,13 @@ function readImgURL(input) {
     }
 }
 
+// GLOBAL VARIABLE TO USE HAS PAGE INDEX
+var page_index = 1;
+var active_filter = true;
+
 // FOR GAME FILTERING IN LIST OF GAMES
-function filterBoardGames(boardgames, pageIndex){
-    var parsed_boardgames = JSON.parse(boardgames);
+function filterBoardGames(new_page_index){
+    var parsed_boardgames = JSON.parse(all_boardgames);
     var name = document.getElementById('name').value.toUpperCase();
     var hasName = !(name == null || name == "");
     var players = document.getElementById('players').value;
@@ -43,36 +47,70 @@ function filterBoardGames(boardgames, pageIndex){
                continue;
            }
        }
+       if(active_filter){
+           if(!parsed_boardgames[i].log_is_active){
+               continue;
+           }
+       }
        filteredBoardGames.push(parsed_boardgames[i]);
     }
-    constructListPage(filteredBoardGames, pageIndex);
+    constructListPage(filteredBoardGames, new_page_index);
 }
 
 // FOR SHOWING CORRECT GAMES IN LIST
-function constructListPage(boardgames, pageIndex){
+function constructListPage(boardgames, new_page_index){
     var grid = document.getElementById('boardgames_grid');
-    var divs = grid.getElementsByTagName('div');
+    var divs = grid.getElementsByTagName('a');
     var counter = 0;
+    var number_of_games = boardgames.length;
     for(var i = 0; i < 9; i++){
         var boardgame_div = divs[i];
         var boardgame_img = boardgame_div.getElementsByTagName('img')[0];
         var boardgame_name = boardgame_div.getElementsByTagName('h3')[0];
-        var current_id = (pageIndex - 1) * 9 + i;
-        if(current_id >= boardgames.length){
-            boardgame_div.style.display = "none";
-            // alert("DONE");
+        var current_id = (new_page_index - 1) * 9 + i;
+        if(current_id >= number_of_games){
+            boardgame_div.style.display = 'none';
         } else {
-            boardgame_div.style.display = "";
-            boardgame_img.setAttribute("src", boardgames[current_id].image);
+            boardgame_div.style.display = '';
+            boardgame_img.setAttribute('src', boardgames[current_id].image);
+            // boardgame_div.setAttribute('href', "{% url 'boardgamecafe:game' '" + boardgames[current_id].id + "' %}");
+            boardgame_div.setAttribute('href', "game/" + boardgames[current_id].id);
             boardgame_name.innerHTML = boardgames[current_id].name;
             counter++;
         }
     }
     if(counter == 0){
-        grid.style.display = "none";
-        document.getElementById('no_games').style.display = "";
+        grid.style.display = 'none';
+        document.getElementById('no_games').style.display = '';
     } else {
-        grid.style.display = "";
-        document.getElementById('no_games').style.display = "none";
+        grid.style.display = '';
+        document.getElementById('no_games').style.display = 'none';
+        page_index = new_page_index;
+        var max_pages = number_of_games / 9.00;
+        if(max_pages == 1){
+            $('#page_index_text').text("");
+        } else{
+            $('#page_index_text').text(page_index);
+        }
+        if(page_index == 1){
+            $('#previous_page_button').css('visibility', 'hidden');
+        } else {
+            $('#previous_page_button').css('visibility', 'visible');
+        }
+        if(page_index < max_pages){
+            $('#next_page_button').css('visibility', 'visible');
+        } else {
+            $('#next_page_button').css('visibility', 'hidden');
+        }
     }
+}
+
+// TO ALTER ACTIVE FILTER IN LIST OF GAMES
+function changeActiveFilter(){
+    if($("#log_is_active_checkbox").is(":checked")){
+        active_filter = false;
+    } else{
+        active_filter = true;
+    }
+    filterBoardGames(1);
 }

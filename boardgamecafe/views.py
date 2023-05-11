@@ -25,13 +25,58 @@ def games(request):
     boardgames_list = []
     for boardgame in all_boardgames:
         # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
-        new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__()}
+        new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(), 'log_is_active': boardgame.log_is_active}
         boardgames_list.append(new_boardgame)
     return render(request, 'boardgamecafe/games.html', {'boardgames': json.dumps(boardgames_list)})
     # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames_list})
     #
     # boardgames_json = serializers.serialize('json', boardgames)
     # return
+
+def game(request, boardgame_id):
+    boardgame = get_object_or_404(BoardGame, pk=boardgame_id)
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/game.html', {'boardgame': boardgame, })
+    # COPIADO DO EDIT PARA MODIFICAR:
+    # name = request.POST.get('name')
+    # release_year = request.POST.get('release_year')
+    # min_players = request.POST.get('min_players')
+    # max_players = request.POST.get('max_players')
+    # min_age = request.POST.get('min_age')
+    # min_playing_time = request.POST.get('min_playing_time')
+    # avg_playing_time = request.POST.get('avg_playing_time')
+    # complexity = request.POST.get('complexity')
+    # number_of_copies = request.POST.get('number_of_copies')
+    # description = request.POST.get('description')
+    # link = request.POST.get('link')
+    # image = request.FILES.get('image')
+    # if request.POST.get('log_is_active'):
+    #     log_is_active = True
+    # else:
+    #     log_is_active = False
+    # if name and release_year and min_players and max_players and min_age and min_playing_time and avg_playing_time and complexity and number_of_copies and description and link and image:
+    #     boardgame.name = name
+    #     boardgame.release_year = release_year
+    #     boardgame.min_players = min_players
+    #     boardgame.max_players = max_players
+    #     boardgame.min_age = min_age
+    #     boardgame.min_playing_time = min_playing_time
+    #     boardgame.avg_playing_time = avg_playing_time
+    #     boardgame.complexity = complexity
+    #     boardgame.number_of_copies = number_of_copies
+    #     boardgame.description = description
+    #     boardgame.link = link
+    #     fs = FileSystemStorage()
+    #     filename = fs.save('boardgame_image_' + str(boardgame.id) + '.webp', image)
+    #     uploaded_file_url = fs.url(filename)
+    #     boardgame.image = uploaded_file_url
+    #     log_is_active = log_is_active
+    #     log_date_last_update = timezone.now()
+    #     boardgame.save()
+    #     return HttpResponseRedirect(reverse('boardgamecafe:games'))
+    # return render(request, 'boardgamecafe/managegame.html',
+    #               {'boardgame_id': boardgame_id,
+    #                'error_message': "Error editing board game. Be sure that all fields are filled correctly."})
 
 def addgame(request):
     # return render(request, 'boardgamecafe/managegame.html')
