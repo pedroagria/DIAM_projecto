@@ -11,7 +11,6 @@
         <label for="log_is_active" class="form_crude_label">Show games that are not active for public use</label>
         <input type="checkbox" name="log_is_active_checkbox" id="log_is_active_checkbox" onclick="changeActiveFilter()">
 
-
         <div id="search_bar">
             <div class="w3-quarter">
                 <label for="name" class="form_crude_label form_crude_item">NAME</label>
@@ -72,9 +71,9 @@
         </div>
         <br>
         <div id="page_index_buttons">
-            <a href="#boardgame_list" class="w3-white w3-button button-change-page" id="previous_page_button" onclick="filterBoardGames('{{ boardgames }}', (page_index - 1))"> Previous Page </a>
+            <a href="#boardgame_list" class="w3-white w3-button button-change-page" id="previous_page_button" onclick="filterBoardGames((page_index - 1))"> Previous Page </a>
             <p id="page_index_text">1</p>
-            <a href="#boardgame_list" class="w3-white w3-button button-change-page" id="next_page_button" onclick="filterBoardGames('{{ boardgames }}', (page_index + 1))"> Next Page </a>
+            <a href="#boardgame_list" class="w3-white w3-button button-change-page" id="next_page_button" onclick="filterBoardGames((page_index + 1))"> Next Page </a>
         </div>
     </div>
 

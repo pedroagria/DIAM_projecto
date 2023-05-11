@@ -54,7 +54,7 @@ class Review(models.Model):
     boardgame = models.ForeignKey(BoardGame, on_delete=models.RESTRICT)
     person = models.ForeignKey(Person, on_delete=models.RESTRICT)
     rate = models.DecimalField(validators=[MinValueValidator(0), MaxValueValidator(5)], max_digits=2, decimal_places=1)
-    text = models.TextField()
+    text = models.TextField() # TIRAR?
     log_is_active = models.BooleanField()
     log_date_created = models.DateTimeField()
     log_date_last_update = models.DateTimeField()
