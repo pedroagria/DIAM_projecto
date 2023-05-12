@@ -1,10 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+
+<section class="w3-light-grey w3-center" style="padding:128px">
+    {% if title %}
+        <h1>EDIT TITLE</h1>
+        <p> Edit the data of the chosen title </p>
+    {% else %}
+        <h1>ADD NEW TITLE</h1>
+        <p> Fill in the data regarding the new title to be added </p>
+    {% endif %}
+
+    {% if error_message %}
+        <p class="w3-red">{{ error_message }}</p>
+    {% endif %}
+
+    <form class="form_crude"
+        {% if title %}
+            action="{% url 'boardgamecafe:edittitle' title.id %}"
+        {% else %}
+          action="{% url 'boardgamecafe:addtitle' %}"
+        {% endif %}
+    method="POST">
+        {% csrf_token %}
+        <div class="form_crude_item">
+            <label for="designation" class="form_crude_label">Title</label>
+            <input type="text" maxlength="50" class="form_crude_input" name="designation" id="designation" placeholder="Enter the title designation (Max. 50 characters)" required
+            {% if title %}
+                value="{{ title.designation }}"
+            {% endif %}>
+        </div>
+        <div class="form_crude_item">
+            <label for="unlock_conditions" class="form_crude_label">Description</label>
+            <textarea maxlength="10000" class="form_crude_input form_crude_input--big" name="unlock_conditions" id="unlock_conditions" placeholder="Enter the unlock conditions for the title or 'None' if it should be automatically unlocked. (Max. 10000 chars)" required
+            >{% if boardgame %}"{{ boardgame.description }}{% endif %}</textarea>
+        </div>
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="log_is_active" class="form_crude_label">The title is active for public use</label>
+            <input type="checkbox" name="log_is_active" id="log_is_active"
+            {% if title %}
+                {%  if title.log_is_active %}
+                    checked
+                {% endif %}
+            {% endif %}>
+        </div>
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button" type="submit">
+        {% if boardgame %}
+            Edit Title
+        {% else %}
+            Add Title
+        {% endif %}</button>
+        </div>
+    </form>
+ </section>
+ {% endblock %}
+

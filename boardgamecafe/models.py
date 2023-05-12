@@ -37,7 +37,7 @@ class Person(models.Model):
     log_date_last_update = models.DateTimeField()
 
 class Title(models.Model):
-    title = models.CharField(max_length=50)
+    designation = models.CharField(max_length=50)
     unlock_conditions = models.TextField()
     log_is_active = models.BooleanField()
     log_date_created = models.DateTimeField()

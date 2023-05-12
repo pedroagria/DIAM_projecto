@@ -26,7 +26,7 @@
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="name" class="form_crude_label">Name</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the board game name" required
+            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the board game name (Max. 50 characters)" required
             {% if boardgame %}
                 value="{{ boardgame.name }}"
             {% endif %}>
@@ -104,7 +104,7 @@
             <label for="log_is_active" class="form_crude_label">The game is active for public use</label>
             <input type="checkbox" name="log_is_active" id="log_is_active"
             {% if boardgame %}
-                {%  if boardgame.log %}
+                {%  if boardgame.log_is_active %}
                     checked
                 {% endif %}
             {% endif %}>

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from .models import BoardGame, Calendar, Table
+from .models import BoardGame, Calendar, Table, Title, Person
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
@@ -154,16 +154,69 @@ def editgame(request, boardgame_id):
         filename = fs.save('boardgame_image_' + str(boardgame.id) + '.webp', image)
         uploaded_file_url = fs.url(filename)
         boardgame.image = uploaded_file_url
-        log_is_active = log_is_active
-        log_date_last_update = timezone.now()
+        boardgame.log_is_active = log_is_active
+        boardgame.log_date_last_update = timezone.now()
         boardgame.save()
         return HttpResponseRedirect(reverse('boardgamecafe:games'))
     return render(request, 'boardgamecafe/managegame.html',
                   {'boardgame_id': boardgame_id, 'error_message': "Error editing board game. Be sure that all fields are filled correctly."})
 
+def titles(request):
+    # if BoardGame.objects.all().count() > 0:
+    # boardgames = BoardGame.objects.all()
+    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
+    # return render(request, 'boardgamecafe/games.html')
+    titles = Title.objects.all()
+    # boardgames_list = []
+    # for boardgame in all_boardgames:
+    #     # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
+    #     new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(), 'log_is_active': boardgame.log_is_active}
+    #     boardgames_list.append(new_boardgame)
+    return render(request, 'boardgamecafe/titles.html', {'titles': titles})
 
+def addtitle(request):
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/managetitle.html')
+    designation = request.POST.get('designation')
+    unlock_conditions = request.POST.get('unlock_conditions')
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if designation and unlock_conditions:
+        title = Title(designation=designation, unlock_conditions=unlock_conditions, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+        title.save()
+        if unlock_conditions == "None":
+            people = Person.objects.all()
+            for person in people:
+                person.unlocked_titles.add(title) #julgo não ser preciso fazer save quando se faz add, mas algo a testar
+        return HttpResponseRedirect(reverse('boardgamecafe:titles'))
+    return render(request, 'boardgamecafe/managegame.html', {'error_message': "Error adding new title. Be sure that all fields are filled correctly."})
 
-
+def edittitle(request, title_id):
+    title = get_object_or_404(Title, pk=title_id)
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/managetitle.html', {'title': title,})
+    designation = request.POST.get('designation')
+    unlock_conditions = request.POST.get('unlock_conditions')
+    previous_unlock_conditions = title.unlock_conditions
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if designation and unlock_conditions:
+        title.designation = designation
+        title.unlock_conditions = unlock_conditions
+        title.log_is_active = log_is_active
+        title.log_date_last_update = timezone.now()
+        title.save()
+        if unlock_conditions != previous_unlock_conditions and unlock_conditions == "None":
+            people = Person.objects.all()
+            for person in people:
+                person.unlocked_titles.add(title) #julgo não ser preciso fazer save quando se faz add, mas algo a testar
+        return HttpResponseRedirect(reverse('boardgamecafe:titles'))
+    return render(request, 'boardgamecafe/managetitle.html',
+                  {'title_id': title_id, 'error_message': "Error editing title. Be sure that all fields are filled correctly."})
 
 def addremovecalendar(request):
     if not request.method == 'POST':
