@@ -11,14 +11,45 @@
         {% if date %}
             {% for d in date %}
                 <p> {{ d.date }} </p>
-                {% for t in slots_list %}
-                    <p> {{ t }} </p>
-                {% endfor %}
+                <div>
+                    <table>
+                        <tr>
+                            <td> <b> Hour </b> </td>
+                            <td> <b> Table Name </b> </td>
+                            <td> <b> Booking </b> </td>
+                        </tr>
+                        {% for s in slots_list %}
+                            <tr>
+                                <td> {{ s }} </td>
+                                <td>
+                                    {% for t in tables %}
+                                        <p> {{ t.name }} </p>
+                                    {% endfor %}
+                                </td>
+                                {# Todo - quando tiver as reservas feitas #}
+                                <td>
+                                    {% for t in tables %}
+                                        <p> Free </p>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+
+                <div class="w3-center">
+                    <a href="{% url 'boardgamecafe:nextdate' d.date 1 %}">
+                        <button class="form_crude_btn w3-button w3-center" id="previous_date"> Previous Date </button>
+                    </a>
+                    &nbsp
+                    <a href="{% url 'boardgamecafe:nextdate' d.date 0 %}">
+                        <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>
+                    </a>
+                </div>
+
+
             {% endfor %}
-
-
-
-
 
 
 
@@ -26,6 +57,8 @@
         {% else %}
             <p> There is no calendar for this day </p>
         {% endif %}
+
+
 
     </div>
 {% endblock %}

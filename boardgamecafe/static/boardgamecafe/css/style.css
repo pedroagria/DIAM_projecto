@@ -515,3 +515,12 @@ input[type=checkbox]
   display: inline;
 }
 
+/* Calendar table */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+tr {
+    border-bottom: 1px solid #ccc;
+}
+

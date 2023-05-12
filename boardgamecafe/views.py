@@ -218,6 +218,7 @@ def edittitle(request, title_id):
     return render(request, 'boardgamecafe/managetitle.html',
                   {'title_id': title_id, 'error_message': "Error editing title. Be sure that all fields are filled correctly."})
 
+
 def addremovecalendar(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/managecalendar.html')
@@ -351,9 +352,63 @@ def calendar(request):
                     aux = str(i) + ":00"
                 slots_list.append(aux)
 
-            return render(request, 'boardgamecafe/calendar.html', {'tables': json.dumps(tables_list), 'date': date, 'slots_list': slots_list})
+            return render(request, 'boardgamecafe/calendar.html', {'tables': tables_list, 'date': date, 'slots_list': slots_list})
         else:
             return render(request, 'boardgamecafe/calendar.html')
+
+    return render(request, 'boardgamecafe/calendar.html')
+
+
+# Vai buscar todas as mesas à base de dados
+def alltables():
+    all_tables = Table.objects.all()
+    tables_list = []
+    for table in all_tables:
+        new_table = {'id': table.id, 'name': table.name, 'capacity': table.capacity, 'log_is_active': table.log_is_active}
+        tables_list.append(new_table)
+    return tables_list
+
+
+def newdate(date, ispreviousdate):
+    if ispreviousdate:
+        return datetime.strptime(date, '%Y-%m-%d').date() - timedelta(days=1)
+    else:
+        return datetime.strptime(date, '%Y-%m-%d').date() + timedelta(days=1)
+
+
+def allslots(date):
+    slots_list = []
+    for d in date:
+        if date.count() > 0 and d['log_is_active']:
+            ot_aux = int(d['open_time'].strftime('%H:%M').split(':')[0])
+            ct_aux = int(d['close_time'].strftime('%H:%M').split(':')[0])
+            for i in range(ot_aux, ct_aux + 1):
+                if i < 10:
+                    aux = "0" + str(i) + ":00"
+                else:
+                    aux = str(i) + ":00"
+                slots_list.append(aux)
+    return slots_list
+
+def nextdate(request, date_str, ispreviousdate_int):
+    tables_list = alltables()
+    if ispreviousdate_int == 1:
+        nextdate = newdate(date_str, True)
+    else:
+        nextdate = newdate(date_str, False)
+    date = Calendar.objects.filter(date=nextdate).values('id', 'date', 'open_time', 'close_time', 'log_is_active')
+    for d in date:
+        if date.count() > 0 and d['log_is_active']:
+            slots_list = allslots(date)
+            return render(request, 'boardgamecafe/calendar.html', {'tables': tables_list, 'date': date, 'slots_list': slots_list})
+        else:
+            return render(request, 'boardgamecafe/calendar.html')
+    return render(request, 'boardgamecafe/calendar.html')
+
+
+
+
+
 
 
 # Templates
