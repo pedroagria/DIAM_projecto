@@ -34,7 +34,7 @@
         <div class="form_crude_item">
             <label for="unlock_conditions" class="form_crude_label">Description</label>
             <textarea maxlength="10000" class="form_crude_input form_crude_input--big" name="unlock_conditions" id="unlock_conditions" placeholder="Enter the unlock conditions for the title or 'None' if it should be automatically unlocked. (Max. 10000 chars)" required
-            >{% if boardgame %}"{{ boardgame.description }}{% endif %}</textarea>
+            >{% if title %}{{ title.unlock_conditions }}{% endif %}</textarea>
         </div>
         <div class="form_crude_item form_crude_item_checkbox">
             <label for="log_is_active" class="form_crude_label">The title is active for public use</label>
@@ -47,7 +47,7 @@
         </div>
         <div class="form_crude_item">
             <button class="form_crude_btn w3-button" type="submit">
-        {% if boardgame %}
+        {% if title %}
             Edit Title
         {% else %}
             Add Title

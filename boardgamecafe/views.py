@@ -211,9 +211,10 @@ def edittitle(request, title_id):
         title.log_date_last_update = timezone.now()
         title.save()
         if unlock_conditions != previous_unlock_conditions and unlock_conditions == "None":
-            people = Person.objects.all()
-            for person in people:
-                person.unlocked_titles.add(title) #julgo não ser preciso fazer save quando se faz add, mas algo a testar
+            all_people = Person.objects.all()
+            for person in all_people:
+                if not title.people.filter(pk=person.id).exists():
+                    person.unlocked_titles.add(title) #julgo não ser preciso fazer save quando se faz add, mas algo a testar;
         return HttpResponseRedirect(reverse('boardgamecafe:titles'))
     return render(request, 'boardgamecafe/managetitle.html',
                   {'title_id': title_id, 'error_message': "Error editing title. Be sure that all fields are filled correctly."})
