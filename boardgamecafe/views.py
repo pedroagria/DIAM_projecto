@@ -37,6 +37,9 @@ def game(request, boardgame_id):
     boardgame = get_object_or_404(BoardGame, pk=boardgame_id)
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/game.html', {'boardgame': boardgame, })
+    # text = request.POST.get('new_comment')
+    # person =
+
     # COPIADO DO EDIT PARA MODIFICAR:
     # name = request.POST.get('name')
     # release_year = request.POST.get('release_year')

@@ -11,12 +11,12 @@
 
 <header id="home">
     <!-- Navbar (sit on top) -->
-    <div class="w3-top">
+    <nav class="w3-top">
         <div class="w3-bar w3-white w3-card" id="myNavbar">
-            <a href="#home" class="w3-bar-item w3-button w3-wide">BOARD GAME CAFE</a>
+            <a href={% url 'boardgamecafe:index' %} class="w3-bar-item w3-button w3-wide">BOARD GAME CAFE</a>
             <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small">
-                <a href="#about" class="w3-bar-item w3-button">ABOUT</a>
+{#                <a href="#about" class="w3-bar-item w3-button">ABOUT</a>#}
                 <a href="#calendar" class="w3-bar-item w3-button"> CALENDAR</a>
                 <a href="#new_booking" class="w3-bar-item w3-button"> NEW BOOKING</a>
                 <a href={% url 'boardgamecafe:games' %} class="w3-bar-item w3-button"> GAMES</a>
@@ -28,10 +28,12 @@
                 <a href="#log_out" class="w3-bar-item w3-button"> LOG OUT</a>
             </div>
         </div>
-    </div>
+    </nav>
     <!-- Backgroud image -->
     {% block header %}
+    <a href="{% url 'boardgamecafe:index' %}">
         <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
+    </a>
     {% endblock %}
 </header>
 
@@ -39,10 +41,10 @@
 
     <!-- About Section -->
     {% block content %}
-    <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
+    <section class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
         <h3>ABOUT US</h3>
         <p>Key features of our company</p>
-    </div>
+    </section>
     {% endblock %}
 
     <!-- Footer -->

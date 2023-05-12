@@ -27,6 +27,7 @@ class Person(models.Model):
     nickname = models.CharField(max_length=50)
     unlocked_titles = models.ManyToManyField('Title', related_name='people')
     chosen_title = models.CharField(max_length=50)
+    date_of_birth = models.DateField()
     email = models.EmailField()
     vat = models.IntegerField()
     phone_number_regex = RegexValidator(regex=r'^\?1?\d{8,15}$', message ="O número deverá ter o formato: '+3512199999'") # REVER
@@ -102,6 +103,20 @@ class Order(models.Model):
     quantity = models.IntegerField()
     total_price = models.DecimalField(validators=[MinValueValidator(0)], max_digits=7, decimal_places=2) # adicionei para guardar o preço no momento em que se faz a order (mesmo que o preço mude no segundo seguinte, está o preço total antigo)
     is_preorder = models.BooleanField()
+    log_is_active = models.BooleanField()
+    log_date_created = models.DateTimeField()
+    log_date_last_update = models.DateTimeField()
+
+class BoardGameLove(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.RESTRICT)
+    boardgame = models.ForeignKey(BoardGame, on_delete=models.RESTRICT)
+    log_is_active = models.BooleanField()
+    log_date_created = models.DateTimeField()
+    log_date_last_update = models.DateTimeField()
+
+class CommentLove(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.RESTRICT)
+    comment = models.ForeignKey(Comment, on_delete=models.RESTRICT)
     log_is_active = models.BooleanField()
     log_date_created = models.DateTimeField()
     log_date_last_update = models.DateTimeField()

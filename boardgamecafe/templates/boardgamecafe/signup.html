@@ -1,0 +1,104 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="w3-light-grey w3-center" style="padding:128px">
+        <h1>REGISTER</h1>
+        <p> Fill in your data to register </p>
+
+    {% if error_message %}
+        <p class="w3-red">{{ error_message }}</p>
+    {% endif %}
+
+    <form class="form_crude" method="POST">
+        {% csrf_token %}
+{#    FIRST NAME#}
+        <div class="form_crude_item">
+            <label for="first_name" class="form_crude_label">Name</label>
+            <input type="text" maxlength="50" class="form_crude_input" name="first_name" id="first_name" placeholder="Enter your first name (Max. 50 characters)" required>
+        </div>
+    {#    LAST NAME#}
+        <div class="form_crude_item">
+            <label for="last_name" class="form_crude_label">Name</label>
+        <input type="text" maxlength="50" class="form_crude_input" name="last_name" id="last_name" placeholder="Enter your last name (Max. 50 characters)" required>
+        </div>
+    {#    NICKNAME#}
+        <div class="form_crude_item">
+            <label for="nickname" class="form_crude_label">Year of release</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="nickname" id="nickname" max="3000" placeholder="Enter the name you want to be known for (Max. 50 characters)" required>
+        </div>
+{#    DROPDOWN TO CHOOSE TITLE, RECEIVE FROM CONTEXT - DAMN, NEED TO CREATE TITLE FIRST...#}
+        <div class="form_crude_item">
+            <label for="chosen_title" class="form_crude_label">Minimum number of players</label>
+            <input type="text" class="form_crude_input form_crude_input--small" name="chosen_title" id="chosen_title" placeholder="Enter your title" required>
+        </div>
+{#        DATE OF BIRTH - ESTE CAMPO AINDA NAO FOI TWINKADO#}
+        <div class="form_crude_item">
+            <label for="expirydate" class="form_crude_label">Expiration Date</label>
+            <input type="date" class="form_crude_input form_crude_input--small" name="expirydate" id="expirydate" placeholder="Enter an expiration date">
+            <span class="form_crude_error">A sample error message</span>
+        </div>
+
+{#    EMAIL#}
+        <div class="form_crude_item">
+            <label for="email" class="form_crude_label">Maximum number of players</label>
+            <input type="email" class="form_crude_input form_crude_input--small" name="email" id="max_players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required
+            {% if boardgame %}
+                value="{{ boardgame.max_players }}"
+            {% endif %}>
+        </div>
+{#    VAT#}
+        <div class="form_crude_item">
+            <label for="min_age" class="form_crude_label">Minimum player age</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="min_age" id="min_age" min="0" max="99" placeholder="Enter age in years (Max. 99)" required
+            {% if boardgame %}
+                value="{{ boardgame.min_age }}"
+            {% endif %}>
+        </div>
+{#    PHONENUMBER#}
+        <div class="form_crude_item">
+            <label for="min_playing_time" class="form_crude_label">Minimum playing time</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="min_playing_time" id="min_playing_time" min="1" placeholder="Enter playing time in minutes" required
+            {% if boardgame %}
+                value="{{ boardgame.min_playing_time }}"
+            {% endif %}>
+        </div>
+{#    USERNAME#}
+        <div class="form_crude_item">
+            <label for="avg_playing_time" class="form_crude_label">Average playing time</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="avg_playing_time" id="avg_playing_time" min="1" placeholder="Enter playing time in minutes" required
+            {% if boardgame %}
+                value="{{ boardgame.avg_playing_time }}"
+            {% endif %}>
+        </div>
+{#    PASSWORD#}
+        <div class="form_crude_item">
+            <label for="complexity" class="form_crude_label">Complexity</label>
+            <input type="number" class="form_crude_input form_crude_input--small" name="complexity" id="complexity" min="1" max="5" step=".01" placeholder="Enter complexity rating (1.00 to 5.00)" required
+            {% if boardgame %}
+                value="{{ boardgame.complexity }}"
+            {% endif %}>
+        </div>
+{#    ADMIN#}
+        <div class="form_crude_item form_crude_item_checkbox">
+            <label for="log_is_active" class="form_crude_label">The game is active for public use</label>
+            <input type="checkbox" name="log_is_active" id="log_is_active"
+            {% if boardgame %}
+                {%  if boardgame.log %}
+                    checked
+                {% endif %}
+            {% endif %}>
+        </div>
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button" type="submit">
+        {% if boardgame %}
+            Edit Game
+        {% else %}
+            Add Game
+        {% endif %}</button>
+        </div>
+    </form>
+ </section>
+ {% endblock %}
+

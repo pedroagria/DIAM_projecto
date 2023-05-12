@@ -2,141 +2,127 @@
 {% load static %}
 
 {% block content %}
+<section class="w3-light-grey w3-center w3-container" style="padding:128px">
 
-<div class="w3-light-grey w3-center" style="padding:128px">
-    {% if boardgame %}
-        <h1>EDIT BOARD GAME</h1>
-        <p> Edit the data of the chosen board game </p>
-    {% else %}
-        <h1>ADD NEW BOARD GAME</h1>
-        <p> Fill in the data regarding the new board game to be added </p>
-    {% endif %}
+    <h1>{{ boardgame.name.upper }} ({{ boardgame.release_year }})</h1>
+{#    <p> Edit the data of the chosen board game </p>#}
 
     {% if error_message %}
         <p class="w3-red">{{ error_message }}</p>
     {% endif %}
+    <div class="w3-container">
+        <figure>
+            <img id="boardgame_image" class="w3-third" src="{{ boardgame.image }}">
+        </figure>
 
-    <form class="form_crude" enctype="multipart/form-data"
-        {% if boardgame %}
-            action="{% url 'boardgamecafe:editgame' boardgame.id %}"
-        {% else %}
-          action="{% url 'boardgamecafe:addgame' %}"
-        {% endif %}
-    method="POST">
-        {% csrf_token %}
-        <div class="form_crude_item">
-            <label for="name" class="form_crude_label">Name</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the board game name" required
-            {% if boardgame %}
-                value="{{ boardgame.name }}"
-            {% endif %}>
-{#            <span class="form_crude_error">A sample error message</span>#}
-        </div>
-        <div class="form_crude_item">
-            <label for="release_year" class="form_crude_label">Year of release</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="release_year" id="release_year" max="3000" placeholder="Enter year of release (Max. 3000)" required
-            {% if boardgame %}
-                value="{{ boardgame.release_year }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="min_players" class="form_crude_label">Minimum number of players</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="min_players" id="min_players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required
-            {% if boardgame %}
-                value="{{ boardgame.min_players }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="max_players" class="form_crude_label">Maximum number of players</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="max_players" id="max_players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required
-            {% if boardgame %}
-                value="{{ boardgame.max_players }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="min_age" class="form_crude_label">Minimum player age</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="min_age" id="min_age" min="0" max="99" placeholder="Enter age in years (Max. 99)" required
-            {% if boardgame %}
-                value="{{ boardgame.min_age }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="min_playing_time" class="form_crude_label">Minimum playing time</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="min_playing_time" id="min_playing_time" min="1" placeholder="Enter playing time in minutes" required
-            {% if boardgame %}
-                value="{{ boardgame.min_playing_time }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="avg_playing_time" class="form_crude_label">Average playing time</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="avg_playing_time" id="avg_playing_time" min="1" placeholder="Enter playing time in minutes" required
-            {% if boardgame %}
-                value="{{ boardgame.avg_playing_time }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="complexity" class="form_crude_label">Complexity</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="complexity" id="complexity" min="1" max="5" step=".01" placeholder="Enter complexity rating (1.00 to 5.00)" required
-            {% if boardgame %}
-                value="{{ boardgame.complexity }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="number_of_copies" class="form_crude_label">Owned copies</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="number_of_copies" id="number_of_copies" min="0" placeholder="Enter the number of owned copies"
-            {% if boardgame %}
-                value="{{ boardgame.number_of_copies }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="description" class="form_crude_label">Description</label>
-            <textarea maxlength="10000" class="form_crude_input form_crude_input--big" name="description" id="description" placeholder="Enter a description for the board game. (Max. 10000 chars)" required
-            >{% if boardgame %}"{{ boardgame.description }}{% endif %}</textarea>
-        </div>
-        <div class="form_crude_item">
-            <label for="link" class="form_crude_label">Link</label>
-            <input type="url" class="form_crude_input form_crude_input--big" name="link" id="link" placeholder="Enter reference link" required
-            {% if boardgame %}
-                value="{{ boardgame.link }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item form_crude_item_checkbox">
-            <label for="log_is_active" class="form_crude_label">The game is active for public use</label>
-            <input type="checkbox" name="log_is_active" id="log_is_active"
-            {% if boardgame %}
-                {%  if boardgame.log %}
-                    checked
-                {% endif %}
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <label for="image" class="form_crude_label">Image</label>
-            <label for="image" class="w3-white w3-button">Upload Image</label>
-            <input type="file" accept="image" name="image" id="image" onchange="readImgURL(this);"
-            {% if boardgame %}
-                >
-                <img id="boardgame_image" class="w3-third" src="{{ boardgame.image }}">
+        <ul class="remove-ul-style w3-half">
+
+            <li><span class="form_crude_label">Players:</span> {{ boardgame.min_players }}-{{ boardgame.max_players }}</li>
+            <li><span class="form_crude_label">Age:</span> {{ boardgame.min_age }}+ </li>
+            {% if boardgame.min_playing_time == boardgame.avg_playing_time %}
+                <li><span class="form_crude_label">Playing Time:</span> {{ boardgame.avg_playing_time }}</li>
             {% else %}
-                required>
-                <img id="boardgame_image" class="w3-third" src="">
+                <li><span class="form_crude_label">Playing Time:</span> {{ boardgame.min_playing_time }}-{{ boardgame.avg_playing_time }}</li>
             {% endif %}
+            <li><span class="form_crude_label">Complexity:</span> {{ boardgame.complexity }}<span class="form_crude_label">/5</span></li>
+            <li><span class="form_crude_label">Available Copies:</span> {{ boardgame.number_of_copies }}</li>
+            <br>
+            <li class="w3-button">
+                {#            ALTERAR ESTA IMAGEM CONSOANTE O UTILIZADOR TIVER OU NAO DADO LIKE NESTE JOGO#}
+                <img class="img-icon-game" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </li>
+{#            O NUMERO DE LOVES VEM DO VIEW COMO CONTEXTO#}
+            <li><span class="form_crude_label"> 60 Loves </span></li>
+            <br>
+{#            TIRAR COR DO BOTAO?#}
+            <li><a class="w3-blue-gray w3-button" href="{{ boardgame.link }}">Link To BoardGameGeek</a></li>
+        </ul>
+    </div>
 
+    <div class="all-wide">
+        <p class="form_crude_label">Description</p>
+        <p class="w3-left-align">{{ boardgame.description }}</p>
+    </div>
+
+    <a class="w3-green w3-button w3-center" href="{%  url 'boardgamecafe:editgame' boardgame.id %}">Edit Game</a>
+ </section>
+
+<section class="w3-center w3-container w3-blue-gray">
+    <h2> COMMENTS </h2>
+
+    <a class="w3-button w3-center w3-white" href="{%  url 'boardgamecafe:editgame' boardgame.id %}">Add Comment</a>
+
+    <form class="form_crude" action="{% url 'boardgamecafe:game' boardgame.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form_crude_item w3-card w3-white w3-round w3-margin w3-center">
+            <textarea maxlength="10000" class="form_crude_input form-gigantic-comment" name="new_comment" id="new_comment" placeholder="Enter the new comment. (Max. 10000 chars)" required></textarea>
         </div>
-{#        <div class="form_crude_item">#}
-{#            <label for="expirydate" class="form_crude_label">Expiration Date</label>#}
-{#            <input type="date" class="form_crude_input form_crude_input--small" name="expirydate" id="expirydate" placeholder="Enter an expiration date">#}
-{#            <span class="form_crude_error">A sample error message</span>#}
-{#        </div>#}
-
-        <div class="form_crude_item">
-            <button class="form_crude_btn w3-button" type="submit">
-        {% if boardgame %}
-            Edit Game
-        {% else %}
-            Add Game
-        {% endif %}</button>
+        <div class="form_crude_item w3-center">
+            <button class="form_crude_btn w3-button w3-center center-submit-button" type="submit">Submit Comment</button>
         </div>
     </form>
- </div>
+
+{#    ESTES COMENTARIOS DEVEM SER CRIADOS COM UM FOR DOS COMENTARIOS QUE VIEREM DA BASE DE DADOS#}
+    {#    TAMBEM DEVE SER CRIADO UM BOTAO PARA ELIMINAR COMENTARIOS QUE NA REALIDADE TIRA-OS DE ACTIVOS; SÓ NOS COMENTÁRIOS DO UTILIZADOR#}
+    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment1"><br>
+        <div class="w3-container">
+            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
+            <span class="w3-right w3-opacity w3-button">
+                <span>60 Loves</span>
+                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </span>
+        </div>
+        <hr class="w3-clear">
+        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </article>
+    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment2"><br>
+        <div class="w3-container">
+            {#            DATA VEM DO CONTEXTO#}
+            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
+            {#            NUMERO DE LOVES VEM DO CONTEXTO#}
+            <span class="w3-right w3-opacity w3-button">
+                <span>60 Loves</span>
+                {#            ALTERAR ESTA IMAGEM CONSOANTE O UTILIZADOR TIVER OU NAO DADO LIKE NESTE JOGO#}
+                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </span>
+        </div>
+        <hr class="w3-clear">
+        {#            TITULO ALCUNHA E TEXTO VÊM DO CONTEXTO#}
+        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </article>
+    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment3"><br>
+        <div class="w3-container">
+            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
+            <span class="w3-right w3-opacity w3-button">
+                <span>60 Loves</span>
+                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </span>
+        </div>
+        <hr class="w3-clear">
+        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </article>
+    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment4"><br>
+        <div class="w3-container">
+            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
+            <span class="w3-right w3-opacity w3-button">
+                <span>60 Loves</span>
+                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </span>
+        </div>
+        <hr class="w3-clear">
+        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </article>
+    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment5"><br>
+        <div class="w3-container">
+            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
+            <span class="w3-right w3-opacity w3-button">
+                <span>60 Loves</span>
+                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            </span>
+        </div>
+        <hr class="w3-clear">
+        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </article>
+</section>
  {% endblock %}
 

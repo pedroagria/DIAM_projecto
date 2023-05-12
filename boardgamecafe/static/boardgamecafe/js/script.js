@@ -114,3 +114,29 @@ function changeActiveFilter(){
     }
     filterBoardGames(1);
 }
+
+
+// CENAS DA CLAUDIA E DO ALEX PARA REAPROVEITAR PARA CRIAR COMENTARIOS
+// <script>
+//     $(document).ready(function () {
+//         var addButton = $('#add_button');
+//         var wrapper = $('#input_fields');
+//
+//         // Add a new set of input fields when the "Add" button is clicked
+//         $(addButton).click(function () {
+//             // var newInput = '<div><input type="text" name="name[]" placeholder="Name"><input type="text" name="age[]" placeholder="Age"><a href="#" class="remove_field">Remove</a></div>';
+//             var newInput = '<div>' +
+//                 '<label htmlFor="substancia">Substância: </label><input type="text" name="substancia[]"  maxlength="5">' + ' ' +
+//                 '<label htmlFor="numratos">Número de ratos: </label><input type="text" name="numratos[]" value="">' +
+//                 '<button href="#" class="remove_field" type="button">Remover</button>' +
+//                 '</div>';
+//             $(wrapper).append(newInput);
+//         });
+//
+//         // Remove the corresponding set of input fields when the "Remove" link is clicked
+//         $(wrapper).on('click', '.remove_field', function (e) {
+//             e.preventDefault();
+//             $(this).parent('div').remove();
+//         });
+//     });
+// </script>
