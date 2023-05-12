@@ -8,9 +8,9 @@
     <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="calendar">
         <h1>CALENDAR</h1>
 
-        {% if date %}
-            {% for d in date %}
-                <p> {{ d.date }} </p>
+        {% if dateobj %}
+            {% for d in dateobj %}
+                <p> {{ date }} </p>
                 <div>
                     <table>
                         <tr>
@@ -36,29 +36,21 @@
                         {% endfor %}
                     </table>
                 </div>
-
-
-                <div class="w3-center">
-                    <a href="{% url 'boardgamecafe:nextdate' d.date 1 %}">
-                        <button class="form_crude_btn w3-button w3-center" id="previous_date"> Previous Date </button>
-                    </a>
-                    &nbsp
-                    <a href="{% url 'boardgamecafe:nextdate' d.date 0 %}">
-                        <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>
-                    </a>
-                </div>
-
-
             {% endfor %}
-
-
-
-
         {% else %}
+            <p> {{ date }} </p>
             <p> There is no calendar for this day </p>
         {% endif %}
 
-
+        <div class="w3-center">
+            <a href="{% url 'boardgamecafe:nextdate' date 1 %}">
+                <button class="form_crude_btn w3-button w3-center" id="previous_date"> Previous Date </button>
+            </a>
+            &nbsp
+            <a href="{% url 'boardgamecafe:nextdate' date 0 %}">
+                <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>
+            </a>
+        </div>
 
     </div>
 {% endblock %}
