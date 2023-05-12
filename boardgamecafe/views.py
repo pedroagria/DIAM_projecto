@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from .models import BoardGame, Calendar, Table, Title, Person
+from .models import BoardGame, Calendar, Table, Title, Person, Booking
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
@@ -307,7 +307,7 @@ def addtable(request):
     if name and capacity:
         table = Table(name=name, capacity=capacity, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
         table.save()
-        return HttpResponseRedirect(reverse('boardgamecafe:index'))
+        return HttpResponseRedirect(reverse('boardgamecafe:tables'))
     return render(request, 'boardgamecafe/managetable.html', {'error_message': "Error adding new table. Be sure that all fields are filled correctly."})
 
 
@@ -326,7 +326,7 @@ def edittable(request, table_id):
         table.capacity = capacity
         table.log_is_active = log_is_active
         table.save()
-        return HttpResponseRedirect(reverse('boardgamecafe:index'))
+        return HttpResponseRedirect(reverse('boardgamecafe:tables'))
     return render(request, 'boardgamecafe/managetable.html', {'table': table, 'error_message': "Error editing table. Be sure that all fields are filled correctly."})
 
 
@@ -402,9 +402,147 @@ def nextdate(request, date_str, ispreviousdate_int):
         return render(request, 'boardgamecafe/calendar.html', {'date': nextdate})
 
 
+def tables(request):
+    if Table.objects.all().count() > 0:
+        tables = Table.objects.all()
+        return render(request, 'boardgamecafe/tables.html', {'tables': tables})
+    return render(request, 'boardgamecafe/tables.html')
 
 
+data_booking = []
+def newbooking(request):
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/newbooking.html')
+    global data_booking
+    data_booking.append(request.POST.get('date'))
+    data_booking.append(request.POST.get('starttime'))
+    data_booking.append(request.POST.get('endtime'))
+    data_booking.append(request.POST.get('players'))
+    data_booking.append(request.POST.get('age'))
+    print(data_booking)
+    # Procura o id do calendário para a data escolhida pelo utilizador
+    start_hour = data_booking[1].split(':')[0]
+    end_hour = data_booking[2].split(':')[0]
+    date_obj = Calendar.objects.filter(date=data_booking[0]).filter(open_time__hour__lte=start_hour).filter(close_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'date', 'open_time', 'close_time', 'log_is_active')
+    date_id = []
+    for d in date_obj:
+        date_id = d["id"]
+    print(date_obj)
+    # Procura as reservas para a data hora escolhida pelo utilizador
+    if date_id:
+        # Reservas que começam antes e terminam depois
+        booking_date1 = Booking.objects.filter(calendar_id=date_id).filter(start_time__hour__lte=start_hour).filter(end_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começam depois e terminam antes
+        booking_date2 = Booking.objects.filter(calendar_id=date_id).filter(start_time__hour__gte=start_hour).filter(end_time__hour__lte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começam antes e terminam antes
+        booking_date3 = Booking.objects.filter(calendar_id=date_id).filter(start_time__hour__lte=start_hour).filter(end_time__hour__gte=start_hour).filter(end_time__hour__lte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começão depois e terminam depois
+        booking_date4 = Booking.objects.filter(calendar_id=date_id).filter(start_time__hour__gte=start_hour).filter(start_time__hour__lte=end_hour).filter(end_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # União das 4 queries
+        booking_date = booking_date1 | booking_date2 | booking_date3 | booking_date4
+        # Lista das mesas ocupadas
+        not_available_tables_list = []
+        for b in booking_date:
+            not_available_tables_list.append(b['table_id'])
+        # Lista das mesas não ocupadas que verificam o número de jogadores
+        available_tables_list = []
+        tables_list = alltables()
+        for i in tables_list:
+            if i['id'] not in not_available_tables_list and i['log_is_active'] and i['capacity'] >= int(data_booking[3]):
+                new_table = {'id': i['id'], 'name': i['name'], 'capacity': i['capacity'], 'log_is_active': i['log_is_active']}
+                available_tables_list.append(new_table)
+            print(available_tables_list)
+        return render(request, 'boardgamecafe/newbooking2.html', {'tables': available_tables_list})
+    return render(request, 'boardgamecafe/newbooking2.html')
 
+data_booking2 = []
+def newbooking2(request):
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/newbooking2.html')
+    # global data_booking1
+    global data_booking2
+    print(data_booking2)
+    data_booking2.append(request.POST.get('chosen_table'))
+    print(data_booking2)
+    # Procura o id do calendário para a data escolhida pelo utilizador
+    print(data_booking)
+    start_hour = data_booking[1].split(':')[0]
+    end_hour = data_booking[2].split(':')[0]
+    date_obj = Calendar.objects.filter(date=data_booking[0]).filter(open_time__hour__lte=start_hour).filter(close_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'date', 'open_time', 'close_time', 'log_is_active')
+    date_id = []
+    for d in date_obj:
+        date_id = d["id"]
+    print(date_obj)
+    # Procura as reservas para a data hora escolhida pelo utilizador
+    if date_id:
+        # Reservas que começam antes e terminam depois
+        booking_date1 = Booking.objects.all().filter(calendar_id=date_id).filter(start_time__hour__lte=start_hour).filter(end_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começam depois e terminam antes
+        booking_date2 = Booking.objects.all().filter(calendar_id=date_id).filter(start_time__hour__gte=start_hour).filter(end_time__hour__lte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começam antes e terminam antes
+        booking_date3 = Booking.objects.all().filter(calendar_id=date_id).filter(start_time__hour__lte=start_hour).filter(end_time__hour__gte=start_hour).filter(end_time__hour__lte=end_hour).filter(log_is_active=True).values('id', 'start_time','end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # Reservas que começão depois e terminam depois
+        booking_date4 = Booking.objects.all().filter(calendar_id=date_id).filter(start_time__hour__gte=start_hour).filter(start_time__hour__lte=end_hour).filter(end_time__hour__gte=end_hour).filter(log_is_active=True).values('id', 'start_time', 'end_time', 'calendar_id', 'table_id', 'boardgame_id', 'log_is_active')
+        # União das 4 queries
+        booking_date = booking_date1 | booking_date2 | booking_date3 | booking_date4
+        # Lista dos jogos ocupados
+        not_available_games_list = []
+        for b in booking_date:
+            not_available_games_list.append(b['boardgame_id'])
+        # Lista dos jogos não ocupados
+        available_games_list = []
+        games_list = BoardGame.objects.all()
+        for i in games_list:
+            count_game = not_available_games_list.count(i.id)
+            # print(i['id'])
+            # print(i['number_of_copies'])
+            if count_game < i.number_of_copies and i.log_is_active:
+                new_boardgame = {'id': i.id, 'name': i.name, 'min_players': i.min_players,
+                                 'max_players': i.max_players, 'min_age': i.min_age,
+                                 'min_playing_time': i.min_playing_time, 'image': i.image.__str__(),
+                                 'log_is_active': i.log_is_active}
+                # new_game = {'id': i['id'], 'name': i['name'], 'min_players': i['min_players'], 'max_players': i['max_players'], 'min_age': i['min_age'], 'min_playing_time': i['min_playing_time'], 'image': i['image'], 'log_is_active': i['log_is_active']}
+                available_games_list.append(new_boardgame)
+
+            # all_boardgames = BoardGame.objects.all()
+            # boardgames_list = []
+            # for boardgame in available_games_list:
+            #     # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
+            #     new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players,
+            #                      'max_players': boardgame.max_players, 'min_age': boardgame.min_age,
+            #                      'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(),
+            #                      'log_is_active': boardgame.log_is_active}
+            #     boardgames_list.append(new_boardgame)
+            # return render(request, 'boardgamecafe/games.html', {'boardgames': json.dumps(boardgames_list)})
+
+
+        # print(boardgames_list)
+        # print(" ")
+        # print(" ")
+        print(available_games_list)
+        return render(request, 'boardgamecafe/newbooking3.html', {'boardgames': json.dumps(available_games_list), 'num_players': data_booking[3], 'min_age': data_booking[4], 'time_available': str((int(end_hour) - int(start_hour))*60)})
+    return render(request, 'boardgamecafe/newbooking3.html')
+
+
+# Vai buscar todos os jogos à base de dados
+def allgames():
+    all_games = BoardGame.objects.all()
+    games_list = []
+    for game in all_games:
+        new_game = {'id': game.id, 'name': game.name, 'min_players': game.min_players, 'max_players': game.max_players, 'min_age': game.min_age, 'min_playing_time': game.min_playing_time, 'image': game.image.__str__(), 'log_is_active': game.log_is_active, 'number_of_copies': game.number_of_copies}
+        games_list.append(new_game)
+    return games_list
+
+
+data_booking3 = []
+def newbooking3(request):
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/newbooking3.html')
+    data_booking3 = []
+    print(data_booking3)
+    data_booking3.append(request.POST.get('chosen_game'))
+    print(data_booking3)
+    return render(request, 'boardgamecafe/index.html')
 
 
 # Templates

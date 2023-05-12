@@ -1,0 +1,61 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>New Booking</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center w3-container" style="padding:128px 128px 16px 128px">
+
+        <h1>NEW BOOKING</h1>
+        <p>Fill in the data regarding the new booking to be added</p>
+
+        <div id="search_bar">
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-green w3-margin-left w3-margin-right" id="setp1_tag">STEP 1</span>
+                <p id="setp1_text"> Schedule and players details </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-green w3-margin-left w3-margin-right" id="setp2_tag">STEP 2</span>
+                <p id="setp2_text"> Choose the table </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-grey w3-margin-left w3-margin-right" id="setp3_tag">STEP 3</span>
+                <p hidden id="setp3_text"> Choose the game </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-grey w3-margin-left w3-margin-right" id="setp4_tag">STEP 4</span>
+                <p hidden id="setp4_text"> Validation and confirmation </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="w3-light-grey w3-center" style="padding:16px 128px 128px 128px">
+        <form class="form_crude" action="{% url 'boardgamecafe:newbooking2' %}" method="POST">
+            {% csrf_token %}
+            {% if tables %}
+                <div class="form_crude_item">
+                    <label for="chosen_table" class="form_crude_label">Chosen Table</label>
+                    <select class="form_crude_input form-dropdown" name="chosen_table" id="chosen_table" required>
+                        {% for t in tables %}
+                            <option class="w3-dropdown-content"
+                                {% if t.name == "None" %}
+                                    selected="selected"
+                                {% endif %}
+                                value={{ t.id }}>{{ t.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% else %}
+                <p> There is no available tables for the schedule and number of players selected. Please choose other options </p>
+            {% endif %}
+            <div class="form_crude_item">
+                {% if tables %}
+                    <button class="form_crude_btn w3-button" type="submit"> Step 3 </button>
+                {% endif %}
+                <input class="form_crude_btn w3-button w3-red" type="button" value="Back" onclick="history.back()">
+            </div>
+        </form>
+    </section>
+{% endblock %}

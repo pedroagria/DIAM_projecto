@@ -1,0 +1,88 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>New Booking</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center w3-container" style="padding:128px 128px 16px 128px">
+
+        <h1>NEW BOOKING</h1>
+        <p>Fill in the data regarding the new booking to be added</p>
+
+        <div id="search_bar">
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-green w3-margin-left w3-margin-right" id="setp1_tag">STEP 1</span>
+                <p id="setp1_text"> Schedule and players details </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-grey w3-margin-left w3-margin-right" id="setp2_tag">STEP 2</span>
+                <p hidden id="setp2_text"> Choose the table </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-grey w3-margin-left w3-margin-right" id="setp3_tag">STEP 3</span>
+                <p hidden id="setp3_text"> Choose the game </p>
+            </div>
+            <div class="w3-quarter">
+                <span class="w3-tag-large w3-grey w3-margin-left w3-margin-right" id="setp4_tag">STEP 4</span>
+                <p hidden id="setp4_text"> Validation and confirmation </p>
+            </div>
+        </div>
+
+    </section>
+    <section class="w3-light-grey w3-center" style="padding:16px 128px 128px 128px">
+
+        <form class="form_crude" action="{% url 'boardgamecafe:newbooking' %}" method="POST">
+            {% csrf_token %}
+            <div class="form_crude_item">
+                <label for="date" class="form_crude_label">Date</label>
+                <input type="date" class="form_crude_input form_crude_input--small" name="date" id="date" required>
+            </div>
+            <div class="form_crude_item">
+                <label for="starttime" class="form_crude_label">Start Time</label>
+                <input type="time" class="form_crude_input form_crude_input--small" name="starttime" id="starttime" required onBlur="endTimeBiggerThanStartTime()">
+            </div>
+            <div class="form_crude_item">
+                <label for="endtime" class="form_crude_label">End Time</label>
+                <input type="time" class="form_crude_input form_crude_input--small" name="endtime" id="endtime" required max="24:00">
+            </div>
+            <div class="form_crude_item">
+                <label for="players" class="form_crude_label">Number of players</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="players" id="players" min="1" max="99" placeholder="Enter number of players (Max. 99)" required>
+            </div>
+            <div class="form_crude_item">
+                <label for="age" class="form_crude_label">Minimum age of the group</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="age" id="age" min="0" max="99" placeholder="Enter age in years (Max. 99)" required>
+            </div>
+            <div class="form_crude_item">
+                <button class="form_crude_btn w3-button" type="submit"> Step 2 </button>
+                <input class="form_crude_btn w3-button w3-red" type="button" value="Cancel" onclick="window.location.replace({% url 'boardgamecafe:index' %})">
+            </div>
+        </form>
+
+    </section>
+{% endblock %}
+
+{% block functions %}
+    <script>
+        {# Definir Today como a data mínima para Start Date #}
+        document.getElementById("date").min = new Date().toISOString().split("T")[0];
+        {# Permite apenas horas certas para Open Time #}
+        const openTimeInput = document.getElementById('starttime');
+        openTimeInput.addEventListener('input', (e) => {
+          let hour = e.target.value.split(':')[0]
+          e.target.value = `${hour}:00`
+        })
+        {# Permite apenas horas certas para Close Time #}
+        const closeTimeInput = document.getElementById('endtime');
+        closeTimeInput.addEventListener('input', (e) => {
+          let hour = e.target.value.split(':')[0]
+          e.target.value = `${hour}:00`
+        })
+        {# Garante que Open Time não é inferior à Close Time #}
+        function endTimeBiggerThanStartTime() {
+            var minToDate = document.getElementById("starttime").value;
+            document.getElementById("endtime").setAttribute("min", minToDate);
+        }
+    </script>
+{% endblock %}

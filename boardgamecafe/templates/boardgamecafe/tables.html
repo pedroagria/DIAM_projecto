@@ -1,0 +1,35 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Tables</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center w3-container" style="padding:128px">
+        <h1>TABLES</h1>
+
+        <a class="w3-green w3-button w3-center w3-right" href="{% url 'boardgamecafe:addtable' %}">Add Table</a>
+        <br>
+        {% if tables %}
+            <div class="w3-container w3-content w3-padding-64 w3-center" >
+                <ul class="w3-ul w3-border w3-white w3-text-grey">
+                    {% for t in tables %}
+                    <li class="w3-padding w3-left-align">
+                        {{ t.name }}
+                        {% if t.log_is_active %}
+                            <span class="w3-tag w3-green w3-margin-left w3-margin-right">Active Table</span>
+                        {% else %}
+                            <span class="w3-tag w3-red w3-margin-left w3-margin-right">Inactive Table</span>
+                        {% endif %}
+                        <a class="w3-green w3-button w3-right-align w3-margin-left w3-margin-right" href="{%  url 'boardgamecafe:edittable' t.id %}">Edit Table</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <br>
+            <p id="no_tables"> No tables added yet. </p>
+        {% endif %}
+
+    </section>
+{% endblock %}

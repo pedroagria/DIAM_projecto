@@ -5,61 +5,62 @@
 {% endblock %}
 
 {% block content %}
-<div class="w3-light-grey w3-center" style="padding:128px">
+    <section class="w3-light-grey w3-center" style="padding:128px">
 
-    {% if table %}
-        <h1>EDIT TABLE</h1>
-        <p> Edit the data of the chosen table </p>
-    {% else %}
-        <h1>ADD NEW TABLE</h1>
-        <p> Fill in the data regarding the new table to be added </p>
-    {% endif %}
+        {% if table %}
+            <h1>EDIT TABLE</h1>
+            <p> Edit the data of the chosen table </p>
+        {% else %}
+            <h1>ADD NEW TABLE</h1>
+            <p> Fill in the data regarding the new table to be added </p>
+        {% endif %}
 
-    {% if error_message %}
-        <p class="w3-red">{{ error_message }}</p>
-    {% endif %}
+        {% if error_message %}
+            <p class="w3-red">{{ error_message }}</p>
+        {% endif %}
 
-    <form class="form_crude"
-          {% if table %}
-            action="{% url 'boardgamecafe:edittable' table.id %}"
-          {% else %}
-            action="{% url 'boardgamecafe:addtable' %}"
-          {% endif %}
-          method="POST">
-        {% csrf_token %}
-        <div class="form_crude_item">
-            <label for="name" class="form_crude_label">Name</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the table name" required
-            {% if table %}
-                value="{{ table.name }}"
-            {% endif %}>
-{#            <span class="form_crude_error">A sample error message</span>#}
-        </div>
-        <div class="form_crude_item">
-            <label for="capacity" class="form_crude_label">Minimum number of players</label>
-            <input type="number" class="form_crude_input form_crude_input--small" name="capacity" id="capacity" min="1" max="99" placeholder="Enter table capacity (Max. 99)" required
-            {% if table %}
-                value="{{ table.capacity }}"
-            {% endif %}>
-        </div>
-        <div class="form_crude_item form_crude_item_checkbox">
-            <label for="log_is_active" class="form_crude_label">The table is active for public use</label>
-            <input type="checkbox" name="log_is_active" id="log_is_active"
-            {% if table %}
-                {%  if table.log_is_active %}
-                    checked
-                {% endif %}
-            {% endif %}>
-        </div>
-        <div class="form_crude_item">
-            <button class="form_crude_btn w3-button" type="submit">
+        <form class="form_crude"
+              {% if table %}
+                action="{% url 'boardgamecafe:edittable' table.id %}"
+              {% else %}
+                action="{% url 'boardgamecafe:addtable' %}"
+              {% endif %}
+              method="POST">
+            {% csrf_token %}
+            <div class="form_crude_item">
+                <label for="name" class="form_crude_label">Name</label>
+                <input type="text" maxlength="50" class="form_crude_input" name="name" id="name" placeholder="Enter the table name" required
                 {% if table %}
-                    Edit Table
-                {% else %}
-                    Add Table
-                {% endif %}
-            </button>
-        </div>
-    </form>
-</div>
+                    value="{{ table.name }}"
+                {% endif %}>
+    {#            <span class="form_crude_error">A sample error message</span>#}
+            </div>
+            <div class="form_crude_item">
+                <label for="capacity" class="form_crude_label">Minimum number of players</label>
+                <input type="number" class="form_crude_input form_crude_input--small" name="capacity" id="capacity" min="1" max="99" placeholder="Enter table capacity (Max. 99)" required
+                {% if table %}
+                    value="{{ table.capacity }}"
+                {% endif %}>
+            </div>
+            <div class="form_crude_item form_crude_item_checkbox">
+                <label for="log_is_active" class="form_crude_label">The table is active for public use</label>
+                <input type="checkbox" name="log_is_active" id="log_is_active"
+                {% if table %}
+                    {%  if table.log_is_active %}
+                        checked
+                    {% endif %}
+                {% endif %}>
+            </div>
+            <div class="form_crude_item">
+                <button class="form_crude_btn w3-button" type="submit">
+                    {% if table %}
+                        Edit Table
+                    {% else %}
+                        Add Table
+                    {% endif %}
+                </button>
+                <input class="form_crude_btn w3-button w3-red" type="button" value="Back" onclick="history.back()">
+            </div>
+        </form>
+    </section>
 {% endblock %}

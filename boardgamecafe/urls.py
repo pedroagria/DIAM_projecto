@@ -18,6 +18,10 @@ urlpatterns = [
     path('addtitle', views.addtitle, name='addtitle'),
     path('edittitle/<int:title_id>', views.edittitle, name='edittitle'),
     path('nextdate/<str:date_str>/<int:ispreviousdate_int>', views.nextdate, name='nextdate'),
+    path('tables', views.tables, name='tables'),
+    path('newbooking', views.newbooking, name='newbooking'),
+    path('newbooking2', views.newbooking2, name='newbooking2'),
+    path('newbooking3', views.newbooking3, name='newbooking3'),
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
     path('tempcafe', views.tempcafe, name='tempcafe'),
