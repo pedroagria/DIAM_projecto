@@ -14,6 +14,7 @@ urlpatterns = [
     path('addtable', views.addtable, name='addtable'),
     path('edittable/<int:table_id>', views.edittable, name='edittable'),
     path('calendar', views.calendar, name='calendar'),
+    path('nextdate/<str:date_str>/<int:ispreviousdate_int>', views.nextdate, name='nextdate'),
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
     path('tempcafe', views.tempcafe, name='tempcafe'),
