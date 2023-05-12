@@ -165,38 +165,79 @@ def editgame(request, boardgame_id):
 
 
 
-def addcalendar(request):
-    # TODO - Falta validações tanto na view como no html
+def addremovecalendar(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/managecalendar.html')
-    startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
-    enddate = datetime.strptime(request.POST.get('enddate'), '%Y-%m-%d').date()
-    opentime = datetime.strptime(request.POST.get('opentime'), '%H:%M').time()
-    closetime = datetime.strptime(request.POST.get('closetime'), '%H:%M').time()
 
-    weekdays = [False] * 7
-    if request.POST.get('monday'):
-        weekdays[0] = True
-    if request.POST.get('tuesday'):
-        weekdays[1] = True
-    if request.POST.get('wednesday'):
-        weekdays[2] = True
-    if request.POST.get('thursday'):
-        weekdays[3] = True
-    if request.POST.get('friday'):
-        weekdays[4] = True
-    if request.POST.get('saturday'):
-        weekdays[5] = True
-    if request.POST.get('sunday'):
-        weekdays[6] = True
-    print(weekdays)
-    numbers_days = (enddate-startdate).days + 1
-    list_dates = [startdate + timedelta(days=x) for x in range(numbers_days)]
-    for i in list_dates:
-        i_weekday = i.weekday() # segunda é 0 e domingo é 6
-        if weekdays[i_weekday]:
-            calendar = Calendar(date=i, open_time=opentime, close_time=closetime, log_is_active=True, log_date_created=timezone.now(), log_date_last_update=timezone.now())
-            calendar.save()
+    if request.POST.get('log_is_active'):
+        log_is_active = False
+    else:
+        log_is_active = True
+
+    # Para adicionar registos
+    if log_is_active:
+        startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
+        enddate = datetime.strptime(request.POST.get('enddate'), '%Y-%m-%d').date()
+        numbers_days = (enddate - startdate).days + 1
+        dates_to_add = [startdate + timedelta(days=x) for x in range(numbers_days)]
+
+        opentime = datetime.strptime(request.POST.get('opentime'), '%H:%M').time()
+        closetime = datetime.strptime(request.POST.get('closetime'), '%H:%M').time()
+
+        weekdays = [False] * 7
+        if request.POST.get('monday'):
+            weekdays[0] = True
+        if request.POST.get('tuesday'):
+            weekdays[1] = True
+        if request.POST.get('wednesday'):
+            weekdays[2] = True
+        if request.POST.get('thursday'):
+            weekdays[3] = True
+        if request.POST.get('friday'):
+            weekdays[4] = True
+        if request.POST.get('saturday'):
+            weekdays[5] = True
+        if request.POST.get('sunday'):
+            weekdays[6] = True
+
+        # Verifica se a data já está na base de dados, se sim actualiza os valores
+        date_list_objects = Calendar.objects.all()
+        aux = dates_to_add.copy()
+        for d in date_list_objects:
+            if d.date in dates_to_add:
+                i_weekday = d.date.weekday()  # segunda é 0 e domingo é 6
+                if weekdays[i_weekday]:
+                    calendar = Calendar.objects.get(id=d.id)
+                    print(calendar)
+                    calendar.open_time = opentime
+                    calendar.close_time = closetime
+                    calendar.log_is_active = log_is_active
+                    calendar.log_date_last_update = timezone.now()
+                    calendar.save()
+                    aux.remove(d.date)
+
+        # Para as datas que não existem na base de dados, cria novo registos
+        for i in aux:
+            i_weekday = i.weekday()  # segunda é 0 e domingo é 6
+            if weekdays[i_weekday]:
+                calendar = Calendar(date=i, open_time=opentime, close_time=closetime, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+                calendar.save()
+
+    # Para remover registos
+    else:
+        startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
+        enddate = datetime.strptime(request.POST.get('enddate'), '%Y-%m-%d').date()
+        numbers_days = (enddate - startdate).days + 1
+        dates_to_remove = [startdate + timedelta(days=x) for x in range(numbers_days)]
+        date_list_objects = Calendar.objects.all()
+        for d in date_list_objects:
+            if d.date in dates_to_remove:
+                # Calendar.objects.filter(id=d.id).delete()
+                calendar = Calendar.objects.get(id=d.id)
+                calendar.log_is_active = log_is_active
+                calendar.log_date_last_update = timezone.now()
+                calendar.save()
+
     return render(request, 'boardgamecafe/managecalendar.html')
 
 def addtable(request):
@@ -213,6 +254,53 @@ def addtable(request):
         table.save()
         return HttpResponseRedirect(reverse('boardgamecafe:index'))
     return render(request, 'boardgamecafe/managetable.html', {'error_message': "Error adding new table. Be sure that all fields are filled correctly."})
+
+
+def edittable(request, table_id):
+    table = get_object_or_404(Table, pk=table_id)
+    if not request.method == 'POST':
+        return render(request, 'boardgamecafe/managetable.html', {'table': table, })
+    name = request.POST.get('name')
+    capacity = request.POST.get('capacity')
+    if request.POST.get('log_is_active'):
+        log_is_active = True
+    else:
+        log_is_active = False
+    if name and capacity:
+        table.name = name
+        table.capacity = capacity
+        table.log_is_active = log_is_active
+        table.save()
+        return HttpResponseRedirect(reverse('boardgamecafe:index'))
+    return render(request, 'boardgamecafe/managetable.html', {'table': table, 'error_message': "Error editing table. Be sure that all fields are filled correctly."})
+
+
+def calendar(request):
+    # Vai buscar todas as mesas à base de dados
+    all_tables = Table.objects.all()
+    tables_list = []
+    for table in all_tables:
+        new_table = {'id': table.id, 'name': table.name, 'capacity': table.capacity, 'log_is_active': table.log_is_active}
+        tables_list.append(new_table)
+
+    # Vai buscar a data de hoje
+    today = datetime.strftime(datetime.now(), '%Y-%m-%d')
+    date = Calendar.objects.filter(date=today).values('id', 'date', 'open_time', 'close_time', 'log_is_active')
+    slots_list = []
+    for d in date:
+        if date.count() > 0 and d['log_is_active']:
+            ot_aux = int(d['open_time'].strftime('%H:%M').split(':')[0])
+            ct_aux = int(d['close_time'].strftime('%H:%M').split(':')[0])
+            for i in range(ot_aux, ct_aux + 1):
+                if i < 10:
+                    aux = "0" + str(i) + ":00"
+                else:
+                    aux = str(i) + ":00"
+                slots_list.append(aux)
+
+            return render(request, 'boardgamecafe/calendar.html', {'tables': json.dumps(tables_list), 'date': date, 'slots_list': slots_list})
+        else:
+            return render(request, 'boardgamecafe/calendar.html')
 
 
 # Templates

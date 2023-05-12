@@ -1,0 +1,31 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Calendar</title>
+{% endblock %}
+
+{% block content %}
+    <div class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="calendar">
+        <h1>CALENDAR</h1>
+
+        {% if date %}
+            {% for d in date %}
+                <p> {{ d.date }} </p>
+                {% for t in slots_list %}
+                    <p> {{ t }} </p>
+                {% endfor %}
+            {% endfor %}
+
+
+
+
+
+
+
+
+        {% else %}
+            <p> There is no calendar for this day </p>
+        {% endif %}
+
+    </div>
+{% endblock %}
