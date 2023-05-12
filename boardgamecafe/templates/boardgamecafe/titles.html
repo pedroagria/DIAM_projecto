@@ -18,7 +18,7 @@
             {%  for title in titles %}
             <li class="w3-padding">
                 <div class="left-align">
-                    {{  title.title }}<span class="w3-tag w3-green w3-margin-left w3-margin-right">Unlocked</span>{{  title.unlock_conditions }}
+                    {{  title.designation }}<span class="w3-tag w3-green w3-margin-left w3-margin-right">Unlocked</span>{{  title.unlock_conditions }}
                     <a class="w3-green w3-button w3-right-align w3-margin-left" href="{%  url 'boardgamecafe:edittitle' 1 %}">Edit Title</a>
                 </div>
             </li>

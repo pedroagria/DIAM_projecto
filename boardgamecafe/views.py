@@ -162,17 +162,17 @@ def editgame(request, boardgame_id):
                   {'boardgame_id': boardgame_id, 'error_message': "Error editing board game. Be sure that all fields are filled correctly."})
 
 def titles(request):
-    # if BoardGame.objects.all().count() > 0:
-    # boardgames = BoardGame.objects.all()
-    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
-    # return render(request, 'boardgamecafe/games.html')
-    titles = Title.objects.all()
+
+    if Title.objects.all().count() > 0:
+        titles = Title.objects.all()
+        # ENVIAR INFORMACAO SE O PERSON LOGIN TEM O TITLE
     # boardgames_list = []
     # for boardgame in all_boardgames:
     #     # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
     #     new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(), 'log_is_active': boardgame.log_is_active}
     #     boardgames_list.append(new_boardgame)
-    return render(request, 'boardgamecafe/titles.html', {'titles': titles})
+        return render(request, 'boardgamecafe/titles.html', {'titles': titles})
+    return render(request, 'boardgamecafe/titles.html')
 
 def addtitle(request):
     if not request.method == 'POST':

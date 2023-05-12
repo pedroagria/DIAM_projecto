@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='person',
             name='date_of_birth',
-            field=models.DateField(default=-1965),
+            field=models.DateField(default="1900-02-25"),
             preserve_default=False,
         ),
     ]
