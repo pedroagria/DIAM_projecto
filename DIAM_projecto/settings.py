@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -125,8 +128,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Default login url     reverse_lazy('votacao:paginalogin')?
-#LOGIN_URL = '/votacao/paginalogin'  # devemos ter de criar um default login url como este
+# Default login url
+LOGIN_URL = reverse_lazy('boardgamecafe:signin')
 
 MEDIA_URL = '/boardgamecafe/static/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'boardgamecafe/static/media')

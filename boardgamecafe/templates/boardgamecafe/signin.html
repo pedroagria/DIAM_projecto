@@ -1,0 +1,32 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="w3-light-grey w3-center" style="padding:128px">
+
+        <h1>SIGN IN</h1>
+{#        <p> Fill in your data to log in.</p>#}
+
+    {% if error_message %}
+        <p class="w3-red">{{ error_message }}</p>
+    {% endif %}
+
+    <form class="form_crude" method="POST" action="{% url 'boardgamecafe:signin' %}">
+        {% csrf_token %}
+        <div class="form_crude_item">
+            <label for="username" class="form_crude_label">Username</label>
+            <input type="text" class="form_crude_input" name="username" id="username" placeholder="Enter your username" required>
+        </div>
+        <div class="form_crude_item">
+            <label for="password" class="form_crude_label">Password</label>
+            <input type="password" class="form_crude_input" name="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <div class="form_crude_item">
+            <button class="form_crude_btn w3-button w3-center" type="submit">Sign in</button>
+{#            <a class="form_crude_btn w3-button w3-center" href="{%  url 'boardgamecafe:signup' %}">Register new account</a>#}
+        </div>
+    </form>
+    <a class="w3-left hide-underline-color" href={% url 'boardgamecafe:signup' %}>Click here if you want to create a new account</a>
+</section>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.db import models
+from django.contrib.auth.models import User
 #from django.utils import timezone
 
 # tenho pena de não ter nenhuma relação muitos para muitos (algo a pensar!)
@@ -21,26 +22,27 @@ class BoardGame(models.Model):
     log_date_created = models.DateTimeField() # adicionei para ficar com histórico de criação
     log_date_last_update = models.DateTimeField() # adicionei para se saber quando alguém mexeu
 
-class Person(models.Model):
-    # possivelmente associar users a isto e colocar algum tipo de pontos
-    name = models.CharField(max_length=100)
-    nickname = models.CharField(max_length=50)
-    unlocked_titles = models.ManyToManyField('Title', related_name='people')
-    chosen_title = models.CharField(max_length=50)
-    date_of_birth = models.DateField()
-    email = models.EmailField()
-    vat = models.IntegerField()
-    phone_number_regex = RegexValidator(regex=r'^\?1?\d{8,15}$', message ="O número deverá ter o formato: '+3512199999'") # REVER
-    phone_number = models.CharField(validators=[phone_number_regex], max_length=16) #blank=true se quisermos que o campo possa ficar vazio
-    log_is_active = models.BooleanField()
-    log_date_created = models.DateTimeField() #alterei o signupdate para ficar como este
-    log_date_last_update = models.DateTimeField()
-
 class Title(models.Model):
-    designation = models.CharField(max_length=50)
+    designation = models.CharField(max_length=50, unique=True)
     unlock_conditions = models.TextField()
     log_is_active = models.BooleanField()
     log_date_created = models.DateTimeField()
+    log_date_last_update = models.DateTimeField()
+
+class Person(models.Model):
+    # possivelmente associar users a isto e colocar algum tipo de pontos
+    # name = models.CharField(max_length=100) #user já tem
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=50)
+    unlocked_titles = models.ManyToManyField('Title', related_name='people')
+    chosen_title = models.ForeignKey(Title, on_delete=models.RESTRICT)
+    date_of_birth = models.DateField()
+    # email = models.EmailField(unique=True)
+    vat = models.CharField(max_length=15)
+    phone_number_regex = RegexValidator(regex='^([0]{2}[1-9]{1,3})?([\+][0-9]{1,3})?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$', message ="One of the accepted formats is +351919560372") # REVER
+    phone_number = models.CharField(validators=[phone_number_regex], max_length=16) #blank=true se quisermos que o campo possa ficar vazio
+    log_is_active = models.BooleanField()
+    log_date_created = models.DateTimeField() #alterei o signupdate para ficar como este
     log_date_last_update = models.DateTimeField()
 
 class Comment(models.Model):

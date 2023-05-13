@@ -1,16 +1,16 @@
 {% extends "boardgamecafe/template.html" %}
 {% load static %}
-<!-- Backgroud image -->
 
 {% block content %}
     <section class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="boardgame_list">
 
         <h1>GAME LIST</h1>
 
+    {%  if user.is_superuser %}
         <a class="w3-green w3-button w3-center w3-right" href="{%  url 'boardgamecafe:addgame' %}">Add Game</a>
-
         <label for="log_is_active" class="form_crude_label">Show games that are not active for public use</label>
         <input type="checkbox" name="log_is_active_checkbox" id="log_is_active_checkbox" onclick="changeActiveFilter()">
+    {% endif %}
 
         <div id="search_bar">
             <div class="w3-quarter">
@@ -33,7 +33,7 @@
 
         <p id="no_games"> Currently, there are no available games. </p>
         <div class="w3-center" style="margin-top:64px" id="boardgames_grid">
-            <a href="" class="w3-third list-container">
+            <a class="w3-third list-container">
                 <img class="image-list" src="">
                 <h3 class="text-list"></h3>
             </a>

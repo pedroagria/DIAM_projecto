@@ -10,7 +10,7 @@ function readImgURL(input) {
     }
 }
 
-// GLOBAL VARIABLE TO USE HAS PAGE INDEX
+// GLOBAL VARIABLES TO USE FOR LIST OF GAMES (BOOKING AND GENERAL)
 var page_index = 1;
 var active_filter = true;
 
@@ -73,7 +73,6 @@ function constructListPage(boardgames, new_page_index){
         } else {
             boardgame_div.style.display = '';
             boardgame_img.setAttribute('src', boardgames[current_id].image);
-            // boardgame_div.setAttribute('href', "{% url 'boardgamecafe:game' '" + boardgames[current_id].id + "' %}");
             boardgame_div.setAttribute('href', "game/" + boardgames[current_id].id);
             boardgame_name.innerHTML = boardgames[current_id].name;
             counter++;
@@ -115,28 +114,27 @@ function changeActiveFilter(){
     filterBoardGames(1);
 }
 
+// ADD COMMENT ON GAME
+function addComment(){
+    if($('#comment_form').is(":hidden")){
+        $('#comment_form').show();
+    } else{
+        $('#comment_form').hide();
+    }
+}
 
-// CENAS DA CLAUDIA E DO ALEX PARA REAPROVEITAR PARA CRIAR COMENTARIOS
-// <script>
-//     $(document).ready(function () {
-//         var addButton = $('#add_button');
-//         var wrapper = $('#input_fields');
-//
-//         // Add a new set of input fields when the "Add" button is clicked
-//         $(addButton).click(function () {
-//             // var newInput = '<div><input type="text" name="name[]" placeholder="Name"><input type="text" name="age[]" placeholder="Age"><a href="#" class="remove_field">Remove</a></div>';
-//             var newInput = '<div>' +
-//                 '<label htmlFor="substancia">Substância: </label><input type="text" name="substancia[]"  maxlength="5">' + ' ' +
-//                 '<label htmlFor="numratos">Número de ratos: </label><input type="text" name="numratos[]" value="">' +
-//                 '<button href="#" class="remove_field" type="button">Remover</button>' +
-//                 '</div>';
-//             $(wrapper).append(newInput);
-//         });
-//
-//         // Remove the corresponding set of input fields when the "Remove" link is clicked
-//         $(wrapper).on('click', '.remove_field', function (e) {
-//             e.preventDefault();
-//             $(this).parent('div').remove();
-//         });
-//     });
-// </script>
+// SET MAX DATE OF BIRTH TO BE EQUAL TO CURRENT DAY
+function setMaxDateOfBirth(){
+    var today = new Date();
+    var day = today.getDate();
+    var month = today.getMonth() + 1;
+    if(month < 10){
+        month = '0' + month.toString();
+    }
+    if(day < 10){
+        day = '0' + day.toString();
+    }
+    var year = today.getFullYear();
+    var maxDate = year + '-' + month + '-' + day;
+    $('#date_of_birth').attr('max', maxDate);
+}

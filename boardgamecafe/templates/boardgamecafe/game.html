@@ -26,15 +26,46 @@
             {% endif %}
             <li><span class="form_crude_label">Complexity:</span> {{ boardgame.complexity }}<span class="form_crude_label">/5</span></li>
             <li><span class="form_crude_label">Available Copies:</span> {{ boardgame.number_of_copies }}</li>
+            <li><span class="form_crude_label">Number of Reviews:</span> {{ boardgame_review_count }}</li>
+            {% if boardgame_review_count > 0 %}
+                <li><span class="form_crude_label">Average Rating:</span> {{ boardgame_review_rating }}<span class="form_crude_label">/5</span></li>
+            {% endif %}
+            <li>
+            {% if user.is_authenticated %}
+                <form action="" method="post">
+                {% csrf_token %}
+                {% for _ in '12345'|make_list %}
+                    <button class="hide-button" name="review_boardgame" value={{ forloop.counter }}><img class="img-icon-star-game w3-button"
+                        {% if boardgame_user_review and forloop.counter <= boardgame_user_review %}
+                            src="{% static 'boardgamecafe/images/star_full_icon.png' %}"></button>
+                        {% else %}
+                            src="{% static 'boardgamecafe/images/star_shape_icon.png' %}"></button>
+                        {% endif %}
+                {% endfor %}
+                </form>
+            {% else %}
+                {% for _ in '12345'|make_list %}
+                    <a href="{% url 'boardgamecafe:signin' %}"><img class="img-icon-star-game w3-button" src="{% static 'boardgamecafe/images/star_shape_icon.png' %}"></a>
+                {% endfor %}
+            {% endif %}
+            </li>
             <br>
             <li class="w3-button">
-                {#            ALTERAR ESTA IMAGEM CONSOANTE O UTILIZADOR TIVER OU NAO DADO LIKE NESTE JOGO#}
-                <img class="img-icon-game" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
+            {% if user.is_authenticated %}
+                <form action="" method="post">
+                {% csrf_token %}
+                {% if loved_boardgame %}
+                    <button class="hide-button" name="love_boardgame" value="not_love"><img class="img-icon-game" src="{% static 'boardgamecafe/images/heart_icon.png' %}"></button>
+                {% else %}
+                     <button class="hide-button" name="love_boardgame" value="love"><img class="img-icon-game" src="{% static 'boardgamecafe/images/like_icon.png' %}"></button>
+                {% endif %}
+                </form>
+            {% else %}
+                <a href="{% url 'boardgamecafe:signin' %}"><img class="img-icon-game" src="{% static 'boardgamecafe/images/like_icon.png' %}"></a>
+            {% endif %}
             </li>
-{#            O NUMERO DE LOVES VEM DO VIEW COMO CONTEXTO#}
-            <li><span class="form_crude_label"> 60 Loves </span></li>
+            <li><span class="form_crude_label"> {{ boardgame_love_count }} Loves </span></li>
             <br>
-{#            TIRAR COR DO BOTAO?#}
             <li><a class="w3-blue-gray w3-button" href="{{ boardgame.link }}">Link To BoardGameGeek</a></li>
         </ul>
     </div>
@@ -44,85 +75,58 @@
         <p class="w3-left-align">{{ boardgame.description }}</p>
     </div>
 
-    <a class="w3-green w3-button w3-center" href="{%  url 'boardgamecafe:editgame' boardgame.id %}">Edit Game</a>
+    {% if user.is_superuser %}
+        <a class="w3-green w3-button w3-center" href="{%  url 'boardgamecafe:editgame' boardgame.id %}">Edit Game</a>
+    {% endif %}
  </section>
 
-<section class="w3-center w3-container w3-blue-gray">
+<section class="w3-center w3-container w3-blue-gray" style="padding:64px">
     <h2> COMMENTS </h2>
 
-    <a class="w3-button w3-center w3-white" href="{%  url 'boardgamecafe:editgame' boardgame.id %}">Add Comment</a>
+    {% if user.is_authenticated %}
+        <div class="w3-button w3-center w3-white" onclick="addComment()">Add Comment</div>
 
-    <form class="form_crude" action="{% url 'boardgamecafe:game' boardgame.id %}" method="POST">
-        {% csrf_token %}
-        <div class="form_crude_item w3-card w3-white w3-round w3-margin w3-center">
-            <textarea maxlength="10000" class="form_crude_input form-gigantic-comment" name="new_comment" id="new_comment" placeholder="Enter the new comment. (Max. 10000 chars)" required></textarea>
-        </div>
-        <div class="form_crude_item w3-center">
-            <button class="form_crude_btn w3-button w3-center center-submit-button" type="submit">Submit Comment</button>
-        </div>
-    </form>
+        <form class="form_crude" action="" method="POST" id="comment_form" hidden>
+            {% csrf_token %}
+            <div class="form_crude_item w3-card w3-white w3-round w3-margin w3-center">
+                <textarea maxlength="10000" class="form_crude_input form-gigantic-comment" name="add_comment" id="add_comment" placeholder="Enter the new comment. (Max. 10000 chars)" required></textarea>
+            </div>
+            <div class="form_crude_item w3-center">
+                <button class="form_crude_btn w3-button w3-center center-submit-button" type="submit">Submit Comment</button>
+            </div>
+        </form>
+    {% else %}
+        <a class="w3-button w3-center w3-white" href="{% url 'boardgamecafe:signin' %}">Add Comment</a>
+    {% endif %}
+
 
 {#    ESTES COMENTARIOS DEVEM SER CRIADOS COM UM FOR DOS COMENTARIOS QUE VIEREM DA BASE DE DADOS#}
     {#    TAMBEM DEVE SER CRIADO UM BOTAO PARA ELIMINAR COMENTARIOS QUE NA REALIDADE TIRA-OS DE ACTIVOS; SÓ NOS COMENTÁRIOS DO UTILIZADOR#}
-    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment1"><br>
-        <div class="w3-container">
-            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
-            <span class="w3-right w3-opacity w3-button">
-                <span>60 Loves</span>
-                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
-            </span>
-        </div>
-        <hr class="w3-clear">
-        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </article>
-    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment2"><br>
-        <div class="w3-container">
-            {#            DATA VEM DO CONTEXTO#}
-            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
-            {#            NUMERO DE LOVES VEM DO CONTEXTO#}
-            <span class="w3-right w3-opacity w3-button">
-                <span>60 Loves</span>
-                {#            ALTERAR ESTA IMAGEM CONSOANTE O UTILIZADOR TIVER OU NAO DADO LIKE NESTE JOGO#}
-                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
-            </span>
-        </div>
-        <hr class="w3-clear">
-        {#            TITULO ALCUNHA E TEXTO VÊM DO CONTEXTO#}
-        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </article>
-    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment3"><br>
-        <div class="w3-container">
-            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
-            <span class="w3-right w3-opacity w3-button">
-                <span>60 Loves</span>
-                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
-            </span>
-        </div>
-        <hr class="w3-clear">
-        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </article>
-    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment4"><br>
-        <div class="w3-container">
-            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
-            <span class="w3-right w3-opacity w3-button">
-                <span>60 Loves</span>
-                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
-            </span>
-        </div>
-        <hr class="w3-clear">
-        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </article>
-    <article class="w3-container w3-card w3-white w3-round w3-margin w3-center" id="recent_comment5"><br>
-        <div class="w3-container">
-            <span class="w3-left w3-opacity date-comments">23:40:23 - 04/02/2023</span>
-            <span class="w3-right w3-opacity w3-button">
-                <span>60 Loves</span>
-                <img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}">
-            </span>
-        </div>
-        <hr class="w3-clear">
-        <p><span class="form_crude_label">Mr. John Doe:</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </article>
+    {% if comments %}
+        {% for comment in comments %}
+            <article class="w3-container w3-card w3-white w3-round w3-margin w3-center"><br>
+                <div class="w3-container">
+                    <span class="w3-left w3-opacity date-comments">{{ comment.log_date_created }}</span>
+                    {% if user.is_authenticated %}
+                        <form action="" method="post" class="w3-right w3-opacity w3-button">
+                        {% csrf_token %}
+                        {% if comment.loved %}
+                            <button class="hide-button" name="love_comment" value="{{ comment.id }} not_love"><span>{{ comment.comment_love_count }} Loves</span><img class="img-icon-comments" src="{% static 'boardgamecafe/images/heart_icon.png' %}"></button>
+                        {% else %}
+                            <button class="hide-button" name="love_comment" value="{{ comment.id }} love"><span>{{ comment.comment_love_count }} Loves</span><img class="img-icon-comments" src="{% static 'boardgamecafe/images/like_icon.png' %}"></button>
+                        {% endif %}
+                        </form>
+                    {% else %}
+                        <a class="w3-right w3-opacity w3-button" href="{% url 'boardgamecafe:signin' %}" ><span>{{ comment.comment_love_count }} Loves</span><img class="img-icon-comments" src="{% static 'boardgamecafe/images/like_icon.png' %}"></a>
+                    {% endif %}
+                </div>
+                <hr class="w3-clear">
+                <p><span class="form_crude_label">{{ comment.person.chosen_title.designation }} {{ comment.person.nickname }}: </span>{{ comment.text }}</p>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p>There are not yet any comments in this game. Add one!</p>
+    {% endif %}
 </section>
- {% endblock %}
+{% endblock %}
 
