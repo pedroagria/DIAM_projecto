@@ -30,25 +30,16 @@
                                 <td> {{ current_user.person.nickname }} </td>
                                 <td> {{ current_user.email }} </td>
                                 <td> {{ current_user.username }} </td>
-                                <td>
+                                <td class="aligned-buttons">
                                     <form action="{% url 'boardgamecafe:userdetails' %}" method="post">
                                     {% csrf_token %}
-                                        <button class="form_crude_btn w3-button w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>User Details</button>
+                                        <button class="form_crude_btn w3-button w3-margin-left w3-margin-right w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>User Details</button>
                                     </form>
 
                                     <form action="{% url 'boardgamecafe:titles' %}" method="post">
                                     {% csrf_token %}
-                                        <button class="form_crude_btn w3-button w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>Titles</button>
+                                        <button class="form_crude_btn w3-button w3-margin-left w3-margin-right w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>Title List</button>
                                     </form>
-
-{#                                    <a href="{% url 'boardgamecafe:user' user.id %}">#}
-{#                                    <a href="{% url 'boardgamecafe:user' user.id %}">#}
-{#                                    <button class="form_crude_btn w3-button w3-center" id="previous_date"> Edit User </button>#}
-{#                                    </a>#}
-{#                                    &nbsp#}
-{#                                    <a href="{% url 'boardgamecafe:nextdate' date 0 %}">#}
-{#                                        <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>#}
-{#                                    </a>#}
                                 </td>
                             </tr>
                         {% endfor %}

@@ -1,4 +1,3 @@
-TODO - Atribuir título a uma pessoa enquanto admin - PEDRO
 TODO - Adicionar preço de reversa (booking_price e total_price). Definir um preço por pessoa por hora (3 euros?) e multiplicar para obter booking_price e total_price (o total ia aumentando com os produtos consumidos, mas neste momento é para ignorar)
 TODO - Ver detalhes de reservas (QUER COMO ADMIN QUER COMO USER) - CLAUDIA
 TODO - Utilizador ver as suas reservas - CLAUDIA?
@@ -20,6 +19,7 @@ Implementar dados pessoais
 Implementar calendário
 Implementar reserva do utilizador
 Implementar admin ver lista de reservas
+Atribuir título a uma pessoa enquanto admin
 
 A cair:
 TODO - Implementar menu de comidas e bebidas (não tem urgência)
