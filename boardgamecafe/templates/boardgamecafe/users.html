@@ -1,0 +1,71 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Users</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-container w3-light-grey w3-center" style="padding:128px 16px">
+
+        <h1>USERS</h1>
+
+        <a class="w3-green w3-button w3-center w3-right" href="{% url 'boardgamecafe:createuser' %}">Create User</a>
+        <br>
+
+
+        {% if users %}
+            <p> Check list with all users</p>
+            <br>
+                <div>
+                    <table>
+                        <tr>
+                            <td> <b> Nickname </b> </td>
+                            <td> <b> E-mail </b> </td>
+                            <td> <b> Username </b> </td>
+                            <td> <b> Tools </b> </td>
+                        </tr>
+                        {% for current_user in users %}
+                            <tr>
+                                <td> {{ current_user.person.nickname }} </td>
+                                <td> {{ current_user.email }} </td>
+                                <td> {{ current_user.username }} </td>
+                                <td>
+                                    <form action="{% url 'boardgamecafe:userdetails' %}" method="post">
+                                    {% csrf_token %}
+                                        <button class="form_crude_btn w3-button w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>User Details</button>
+                                    </form>
+
+                                    <form action="{% url 'boardgamecafe:titles' %}" method="post">
+                                    {% csrf_token %}
+                                        <button class="form_crude_btn w3-button w3-center" name="selected_user_id" id="selected_user_id" value={{ current_user.id }}>Titles</button>
+                                    </form>
+
+{#                                    <a href="{% url 'boardgamecafe:user' user.id %}">#}
+{#                                    <a href="{% url 'boardgamecafe:user' user.id %}">#}
+{#                                    <button class="form_crude_btn w3-button w3-center" id="previous_date"> Edit User </button>#}
+{#                                    </a>#}
+{#                                    &nbsp#}
+{#                                    <a href="{% url 'boardgamecafe:nextdate' date 0 %}">#}
+{#                                        <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>#}
+{#                                    </a>#}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+        {% else %}
+            <p> There is no user to show </p>
+        {% endif %}
+
+{#        <div class="w3-center">#}
+{#            <a href="{% url 'boardgamecafe:nextdate' date 1 %}">#}
+{#                <button class="form_crude_btn w3-button w3-center" id="previous_date"> Previous Date </button>#}
+{#            </a>#}
+{#            &nbsp#}
+{#            <a href="{% url 'boardgamecafe:nextdate' date 0 %}">#}
+{#                <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>#}
+{#            </a>#}
+{#        </div>#}
+    </section>
+{% endblock %}

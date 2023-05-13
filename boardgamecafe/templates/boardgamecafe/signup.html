@@ -3,31 +3,45 @@
 
 {% block content %}
 
+{% block title %}
+     {% if user.is_superuser %}
+        <title>Create User</title>
+    {% else %}
+        <title>Sign Up</title>
+    {% endif %}
+{% endblock %}
+
 <section class="w3-light-grey w3-center" style="padding:128px">
+
+     {% if user.is_superuser %}
+        <h1>CREATE USER</h1>
+        <p> Fill in the data of the new user</p>
+    {% else %}
         <h1>SIGN UP</h1>
-        <p> Fill in your data to register as a user.</p>
+        <p> Fill in your data to register as a user</p>
+    {% endif %}
 
     {% if error_message %}
         <p class="w3-red">{{ error_message }}</p>
     {% endif %}
 
     {% if user.is_superuser %}
-        <form class="form_crude" method="POST" action="{% url 'boardgamecafe:createotheruser' %}">
+        <form class="form_crude" method="POST" action="{% url 'boardgamecafe:createuser' %}">
     {% else %}
         <form class="form_crude" method="POST" action="{% url 'boardgamecafe:signup' %}">
     {% endif %}
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="first_name" class="form_crude_label">First Name</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="first_name" id="first_name" placeholder="Enter your first name (Max. 50 characters)" required>
+            <input type="text" maxlength="50" class="form_crude_input" name="first_name" id="first_name" placeholder="Enter first name (Max. 50 characters)" required>
         </div>
         <div class="form_crude_item">
             <label for="last_name" class="form_crude_label">Last Name</label>
-        <input type="text" maxlength="50" class="form_crude_input" name="last_name" id="last_name" placeholder="Enter your last name (Max. 50 characters)" required>
+        <input type="text" maxlength="50" class="form_crude_input" name="last_name" id="last_name" placeholder="Enter last name (Max. 50 characters)" required>
         </div>
         <div class="form_crude_item">
             <label for="nickname" class="form_crude_label">Nickname</label>
-            <input type="text" maxlength="50" class="form_crude_input" name="nickname" id="nickname" placeholder="Enter the name you want to be known for (Max. 50 characters)" required>
+            <input type="text" maxlength="50" class="form_crude_input" name="nickname" id="nickname" placeholder="Enter the name to be known for (Max. 50 characters)" required>
         </div>
         <div class="form_crude_item">
             <label for="chosen_title" class="form_crude_label">Chosen Title</label>
@@ -43,15 +57,15 @@
         </div>
         <div class="form_crude_item">
             <label for="email" class="form_crude_label">E-mail</label>
-            <input type="email" class="form_crude_input form_crude_input--small" name="email" id="email" placeholder="Enter your email" required>
+            <input type="email" class="form_crude_input form_crude_input--small" name="email" id="email" placeholder="Enter email" required>
         </div>
         <div class="form_crude_item">
             <label for="vat" class="form_crude_label">VAT</label>
-            <input type="text" maxlength="15" class="form_crude_input form_crude_input--small" name="vat" id="vat" placeholder="Enter your tax ID" required>
+            <input type="text" maxlength="15" class="form_crude_input form_crude_input--small" name="vat" id="vat" placeholder="Enter tax ID" required>
         </div>
         <div class="form_crude_item">
             <label for="phone_number" class="form_crude_label">Phone number</label>
-            <input type="tel" class="form_crude_input form_crude_input--small" name="phone_number" id="phone_number" pattern="^([0]{2}[1-9]{1,3})?([\+][0-9]{1,3})?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$" placeholder="Enter your phone number" required>
+            <input type="tel" class="form_crude_input form_crude_input--small" name="phone_number" id="phone_number" pattern="^([0]{2}[1-9]{1,3})?([\+][0-9]{1,3})?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$" placeholder="Enter phone number" required>
         </div>
         <div class="form_crude_item">
             <label for="username" class="form_crude_label">Username</label>
