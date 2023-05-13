@@ -49,14 +49,8 @@
             <p> There is no user to show </p>
         {% endif %}
 
-{#        <div class="w3-center">#}
-{#            <a href="{% url 'boardgamecafe:nextdate' date 1 %}">#}
-{#                <button class="form_crude_btn w3-button w3-center" id="previous_date"> Previous Date </button>#}
-{#            </a>#}
-{#            &nbsp#}
-{#            <a href="{% url 'boardgamecafe:nextdate' date 0 %}">#}
-{#                <button class="form_crude_btn w3-button w3-center" id="next_date"> Next Date </button>#}
-{#            </a>#}
-{#        </div>#}
+        <div class="form_crude_item">
+            <input class="form_crude_btn w3-button w3-red" type="button" value="Back" onclick="history.back()">
+        </div>
     </section>
 {% endblock %}

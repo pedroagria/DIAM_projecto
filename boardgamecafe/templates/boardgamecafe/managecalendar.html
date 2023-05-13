@@ -9,7 +9,7 @@
     <h1>ADD NEW DATES / REMOVE DATES</h1>
     <p> Fill in the data regarding the new dates to be added </p>
 
-    <form class="form_crude" action="{% url 'boardgamecafe:addremovecalendar' %}" method="POST">
+    <form class="form_crude" action="{% url 'boardgamecafe:managecalendar' %}" method="POST">
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="startdate" class="form_crude_label">Start Date</label>

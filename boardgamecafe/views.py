@@ -296,7 +296,7 @@ def edittitle(request, title_id):
 @permission_required('boardgamecafe.add_calendar', raise_exception=True)
 @permission_required('boardgamecafe.change_calendar', raise_exception=True)
 @login_required
-def addremovecalendar(request):
+def managecalendar(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/managecalendar.html')
     if request.POST.get('log_is_active'):
@@ -973,17 +973,19 @@ def userdetails(request):
             error_occured = True
             error_message += "The chosen title does not exist."
         if not error_occured:
-            user_to_edit.username = username
             user_to_edit.email = email
             if password and password_confirm:
                 user_to_edit.set_password(password)
-            user_to_edit.first_name = first_name
-            user_to_edit.last_name = last_name
+            if request.user.is_superuser:
+                user_to_edit.username = username
+                user_to_edit.first_name = first_name
+                user_to_edit.last_name = last_name
             user_to_edit.save()
             user_to_edit.person.nickname=nickname
             user_to_edit.person.chosen_title=chosen_title
-            user_to_edit.person.date_of_birth=date_of_birth
-            user_to_edit.person.vat=vat
+            if request.user.is_superuser:
+                user_to_edit.person.date_of_birth=date_of_birth
+                user_to_edit.person.vat=vat
             user_to_edit.person.phone_number=phone_number
             user_to_edit.person.log_date_last_update=timezone.now()
             user_to_edit.person.save()

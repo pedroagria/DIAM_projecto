@@ -29,12 +29,12 @@
         <div class="form_crude_item">
             <label for="first_name" class="form_crude_label">First Name</label>
             <input type="text" maxlength="50" class="form_crude_input" name="first_name" id="first_name" placeholder="Enter first name (Max. 50 characters)" value={{ user_to_view.first_name }}
-                    {% if not user.is_superuser %} disabled {% endif %} required>
+                    {% if not user.is_superuser %} readonly="readonly" {% endif %} required>
         </div>
         <div class="form_crude_item">
             <label for="last_name" class="form_crude_label">Last Name</label>
             <input type="text" maxlength="50" class="form_crude_input" name="last_name" id="last_name" placeholder="Enter last name (Max. 50 characters)" value={{ user_to_view.last_name }}
-                    {% if not user.is_superuser %} disabled {% endif %} required>
+                    {% if not user.is_superuser %} readonly="readonly" {% endif %} required>
         </div>
         <div class="form_crude_item">
             <label for="nickname" class="form_crude_label">Nickname</label>
@@ -44,14 +44,14 @@
             <label for="chosen_title" class="form_crude_label">Chosen Title</label>
             <select class="form_crude_input form-dropdown" name="chosen_title" id="chosen_title" required>
                 {% for title in titles %}
-                    <option class="w3-dropdown-content" {% if title.designation == user_to_view.person.chosen_title %}selected="selected"{% endif %} value={{ title.id }}>{{ title.designation }}</option>
+                    <option class="w3-dropdown-content" {% if title == user_to_view.person.chosen_title %}selected="selected"{% endif %} value={{ title.id }}>{{ title.designation }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form_crude_item">
             <label for="date_of_birth" class="form_crude_label">Date of Birth</label>
             <input type="date" class="form_crude_input form_crude_input--small" name="date_of_birth" id="date_of_birth" value={{ date_of_birth }} max="3000-01-01"
-                   {% if not user.is_superuser %} disabled {% endif %} required>
+                   {% if not user.is_superuser %} readonly="readonly" {% endif %} required>
         </div>
         <div class="form_crude_item">
             <label for="email" class="form_crude_label">E-mail</label>
@@ -60,7 +60,7 @@
         <div class="form_crude_item">
             <label for="vat" class="form_crude_label">VAT</label>
             <input type="text" maxlength="15" class="form_crude_input form_crude_input--small" name="vat" id="vat" placeholder="Enter tax ID" value={{ user_to_view.person.vat }}
-                    {% if not user.is_superuser %} disabled {% endif %} required>
+                    {% if not user.is_superuser %} readonly="readonly" {% endif %} required>
         </div>
         <div class="form_crude_item">
             <label for="phone_number" class="form_crude_label">Phone number</label>
@@ -69,7 +69,7 @@
         <div class="form_crude_item">
             <label for="username" class="form_crude_label">Username</label>
             <input type="text" class="form_crude_input" name="username" id="username" placeholder="Enter a username of your choosing" value={{ user_to_view.username }}
-                    {% if not user.is_superuser %} disabled {% endif %} required>
+                    {% if not user.is_superuser %} readonly="readonly" {% endif %} required>
         </div>
         <div class="form_crude_item">
             <label for="password" class="form_crude_label">Password</label>
@@ -89,6 +89,10 @@
             <button class="form_crude_btn w3-button" type="submit">Edit details</button>
         </div>
     </form>
+
+    <div class="form_crude_item">
+        <input class="form_crude_btn w3-button w3-red" type="button" value="Cancel" onclick="history.back()">
+    </div>
 </section>
 {% endblock %}
 
