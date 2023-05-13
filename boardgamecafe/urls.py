@@ -20,11 +20,16 @@ urlpatterns = [
     path('nextdate/<str:date_str>/<int:ispreviousdate_int>', views.nextdate, name='nextdate'),
     path('tables', views.tables, name='tables'),
 
-    # sign in and sign up
+    # sign in, sign up and personal area
     path('signup', views.signup, name='signup'),
-    path('createotheruser', views.createotheruser, name='createotheruser'),
     path('signin', views.signin, name='signin'),
     path('logout', views.signout, name='logout'),
+    path('personalarea', views.personalarea, name='personalarea'),
+    path('userdetails', views.userdetails, name='userdetails'),
+
+    # admin management
+    path('users', views.users, name='users'),
+    path('createuser', views.createuser, name='createuser'),
 
     # booking
     path('newbooking', views.newbooking, name='newbooking'),

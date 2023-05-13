@@ -66,15 +66,11 @@ def game(request, boardgame_id):
                 boardgamelove = BoardGameLove(person=request.user.person, boardgame=boardgame, log_is_active=love, log_date_created=timezone.now(), log_date_last_update=timezone.now())
                 boardgamelove.save()
         elif review_boardgame:
-            print("RECEIVED: " + str(review_boardgame))
             review_found = boardgame.review_set.all().filter(person=request.user.person)
             if review_found:
-                print("FOUND EXISTING REVIEW")
                 if int(review_boardgame) == review_found[0].rate:
-                    print("SAME RATING")
                     review_found[0].log_is_active = not review_found[0].log_is_active
                 else:
-                    print("NEW RATING:" + str(review_boardgame))
                     review_found[0].rate = review_boardgame
                     review_found[0].log_is_active = True
                 review_found[0].save()
@@ -115,7 +111,6 @@ def game(request, boardgame_id):
     all_comments = boardgame.comment_set.all().filter(log_is_active=True).order_by('-log_date_created')
     if not all_comments:
         if review_exists_boardgame:
-            print("THE RATING IS ____________ : " + str(review_exists_boardgame[0].rate))
             return render(request, 'boardgamecafe/game.html', {'boardgame': boardgame, 'boardgame_love_count': boardgame_love_count, 'loved_boardgame': loved_boardgame, 'boardgame_review_count': boardgame_review_count, 'boardgame_review_rating': boardgame_review_rating, 'boardgame_user_review': review_exists_boardgame[0].rate,})
         return render(request, 'boardgamecafe/game.html',
                   {'boardgame': boardgame, 'boardgame_love_count': boardgame_love_count,
@@ -220,14 +215,24 @@ def editgame(request, boardgame_id):
 
 @login_required
 def titles(request):
+    # RECECAO DE POST - user_id_title_id
+    if request.method == 'POST':
+        selected_user_id = request.POST.get('selected_user_id')
+        selected_user = get_object_or_404(User, pk=selected_user_id)
+        if not request.user.is_superuser and selected_user != request.user:
+            selected_user = request.user
+        show_edit = False;
+    else:
+        selected_user = request.user
+        show_edit = True;
     if Title.objects.all().count() > 0:
         all_titles = Title.objects.all()
         titles = []
         for title in all_titles:
-            new_title = {'id': title.id, 'designation': title.designation, 'unlock_conditions': title.unlock_conditions, 'unlocked': request.user.person.unlocked_titles.filter(pk=title.id).exists(), 'log_is_active': title.log_is_active}
+            new_title = {'id': title.id, 'designation': title.designation, 'unlock_conditions': title.unlock_conditions, 'unlocked': selected_user.person.unlocked_titles.filter(pk=title.id).exists(), 'log_is_active': title.log_is_active}
             titles.append(new_title)
-        return render(request, 'boardgamecafe/titles.html', {'titles': titles})
-    return render(request, 'boardgamecafe/titles.html')
+        return render(request, 'boardgamecafe/titles.html', {'selected_user': selected_user, 'titles': titles, 'show_edit': show_edit,})
+    return render(request, 'boardgamecafe/titles.html', {'selected_user': selected_user, 'show_edit': show_edit,})
 
 @permission_required('boardgamecafe.add_title', raise_exception=True)
 @login_required
@@ -694,13 +699,82 @@ def bookingerror(request):
 
 
 
+# ADMIN USERS CHECK SECTION
+
+@permission_required('view_user', raise_exception=True)
+@login_required
+def users(request):
+    users = User.objects.all().order_by('person__nickname')
+    return render(request, 'boardgamecafe/users.html',
+                  {'users': users, })
+
+#superuser defaults to true in permissions regardless of its existance
+@permission_required('add_user', raise_exception=True)
+@login_required
+def createuser(request):
+    if not request.method == 'POST':
+        titles = Title.objects.all().filter(unlock_conditions__exact="None", log_is_active__exact=True)
+        return render(request, 'boardgamecafe/signup.html', {'titles': titles})
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    nickname = request.POST.get('nickname')
+    chosen_title_id = request.POST.get('chosen_title') # REVER
+    date_of_birth = request.POST.get('date_of_birth')
+    email = request.POST.get('email')
+    vat = request.POST.get('vat')
+    phone_number = request.POST.get('phone_number')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    password_confirm = request.POST.get('password_confirm')
+    if first_name and last_name and nickname and chosen_title_id and date_of_birth and email and vat and phone_number and username and password and password_confirm:
+        error_message = "Error registering new user. "
+        error_occured = False
+        all_users = User.objects.all()
+        for user in all_users:
+            if user.username == username:
+                if error_occured:
+                    error_message += "<br>"
+                error_occured = True
+                error_message += "The username " + username + " already exists."
+            if user.email == email:
+                if error_occured:
+                    error_message += "<br>"
+                error_occured = True
+                error_message += "The email " + email + " already exists."
+        if password != password_confirm:
+            if error_occured:
+                error_message += "<br>"
+            error_occured = True
+            error_message += "The password does not match the confirmation password."
+        try:
+            chosen_title = Title.objects.get(pk=chosen_title_id)
+        except Title.DoesNotExist:
+            if error_occured:
+                error_message += "<br>"
+            error_occured = True
+            error_message += "The chosen title does not exist."
+        if not error_occured:
+            if request.POST.get('is_superuser'):
+                new_user = User.objects.create_superuser(username, email, password)
+            else:
+                new_user = User.objects.create_user(username, email, password)
+            new_user.first_name = first_name
+            new_user.last_name = last_name
+            new_user.save()
+            person = Person(user=new_user, nickname=nickname, chosen_title=chosen_title, date_of_birth=date_of_birth, vat=vat, phone_number=phone_number, log_is_active=True, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+            person.save()
+            titles = Title.objects.all().filter(unlock_conditions__exact="None")
+            for title in titles:
+                person.unlocked_titles.add(title)
+            return HttpResponseRedirect(reverse('boardgamecafe:index'))
+        return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
+    return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
 
 
 
 
 
-
-# SIGN IN AND SIGN UP SECTION
+# SIGN IN, SIGN UP AND PERSONAL DATA SECTION
 def signup(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('boardgamecafe:index'))
@@ -710,7 +784,7 @@ def signup(request):
     first_name = request.POST.get('first_name')
     last_name = request.POST.get('last_name')
     nickname = request.POST.get('nickname')
-    chosen_title_id = request.POST.get('chosen_title') # REVER
+    chosen_title_id = request.POST.get('chosen_title')
     date_of_birth = request.POST.get('date_of_birth')
     email = request.POST.get('email')
     vat = request.POST.get('vat')
@@ -763,68 +837,6 @@ def signup(request):
         return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
     return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
 
-#superuse defaults to true in permission regardless of its existance
-@permission_required('user.create_superuser', raise_exception=True)
-@login_required
-def createotheruser(request):
-    if not request.method == 'POST':
-        titles = Title.objects.all().filter(unlock_conditions__exact="None", log_is_active__exact=True)
-        return render(request, 'boardgamecafe/signup.html', {'titles': titles})
-    first_name = request.POST.get('first_name')
-    last_name = request.POST.get('last_name')
-    nickname = request.POST.get('nickname')
-    chosen_title_id = request.POST.get('chosen_title') # REVER
-    date_of_birth = request.POST.get('date_of_birth')
-    email = request.POST.get('email')
-    vat = request.POST.get('vat')
-    phone_number = request.POST.get('phone_number')
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    password_confirm = request.POST.get('password_confirm')
-    if first_name and last_name and nickname and chosen_title_id and date_of_birth and email and vat and phone_number and username and password and password_confirm:
-        error_message = "Error registering new user. "
-        error_occured = False
-        all_users = User.objects.all()
-        for user in all_users:
-            if user.username == username:
-                if error_occured:
-                    error_message += "<br>"
-                error_occured = True
-                error_message += "The username " + username + " already exists."
-            if user.email == email:
-                if error_occured:
-                    error_message += "<br>"
-                error_occured = True
-                error_message += "The email " + email + " already exists."
-        if password != password_confirm:
-            if error_occured:
-                error_message += "<br>"
-            error_occured = True
-            error_message += "The password does not match the confirmation password."
-        try:
-            chosen_title = Title.objects.get(pk=chosen_title_id)
-        except Title.DoesNotExist:
-            if error_occured:
-                error_message += "<br>"
-            error_occured = True
-            error_message += "The chosen title does not exist."
-        if not error_occured:
-            if request.POST.get('is_superuser'):
-                new_user = User.objects.create_superuser(username, email, password)
-            else:
-                new_user = User.objects.create_user(username, email, password)
-            new_user.first_name = first_name
-            new_user.last_name = last_name
-            new_user.save()
-            person = Person(user=new_user, nickname=nickname, chosen_title=chosen_title, date_of_birth=date_of_birth, vat=vat, phone_number=phone_number, log_is_active=True, log_date_created=timezone.now(), log_date_last_update=timezone.now())
-            person.save()
-            titles = Title.objects.all().filter(unlock_conditions__exact="None")
-            for title in titles:
-                person.unlocked_titles.add(title)
-            return HttpResponseRedirect(reverse('boardgamecafe:index'))
-        return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
-    return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
-
 def signin(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('boardgamecafe:index'))
@@ -845,12 +857,93 @@ def signout(request):
     request.session.flush()
     return HttpResponseRedirect(reverse('boardgamecafe:index'))
 
+@login_required
+def personalarea(request):
+    return render(request, 'boardgamecafe/personalarea.html')
 
-
-
-
-
-
+@login_required
+def userdetails(request):
+    if not request.method == 'POST':
+      selected_user_id = request.user.id
+    else:
+        selected_user_id = request.POST.get('selected_user_id')
+    if selected_user_id:
+        selected_user = get_object_or_404(User, pk=selected_user_id)
+        if not request.user.is_superuser and selected_user != request.user:
+            selected_user = request.user
+        titles = selected_user.person.unlocked_titles.filter(log_is_active__exact=True)
+        date_of_birth = selected_user.person.date_of_birth.strftime('%Y-%m-%d')
+        return render(request, 'boardgamecafe/userdetails.html', {'user_to_view': selected_user, 'titles': titles, 'date_of_birth': date_of_birth,})
+    user_id = request.POST.get('user_id')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    nickname = request.POST.get('nickname')
+    chosen_title_id = request.POST.get('chosen_title')
+    date_of_birth = request.POST.get('date_of_birth')
+    email = request.POST.get('email')
+    vat = request.POST.get('vat')
+    phone_number = request.POST.get('phone_number')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    password_confirm = request.POST.get('password_confirm')
+    if user_id and first_name and last_name and nickname and chosen_title_id and date_of_birth and email and vat and phone_number and username:
+        error_message = "Error editing user. "
+        error_occured = False
+        if not request.user.is_superuser and user_id != request.user.id:
+            user_id = request.user.id
+        user_to_edit = User.objects.get(pk=user_id)
+        if not user_to_edit:
+            error_message += "Showing your user details."
+            titles = request.user.person.unlocked_titles.filter(log_is_active__exact=True)
+            date_of_birth = request.user.person.date_of_birth.strftime('%Y-%m-%d')
+            return render(request, 'boardgamecafe/userdetails.html',
+                          {'error_message': error_message,
+                           'user_to_view': request.user, 'titles': titles, 'date_of_birth': date_of_birth, })
+        if user_to_edit.username != username or user_to_edit.email != email:
+            all_users = User.objects.all()
+            for user in all_users:
+                if user_to_edit.username != username:
+                    if user.username == username:
+                        error_occured = True
+                        error_message += "The username " + username + " already exists."
+                if user_to_edit.email != email:
+                    if user.email == email:
+                        error_occured = True
+                        error_message += "The email " + email + " already exists."
+        if password and password_confirm:
+            if password != password_confirm:
+                error_occured = True
+                error_message += "The password does not match the confirmation password."
+        try:
+            chosen_title = Title.objects.get(pk=chosen_title_id)
+        except Title.DoesNotExist:
+            error_occured = True
+            error_message += "The chosen title does not exist."
+        if not error_occured:
+            user_to_edit.username = username
+            user_to_edit.email = email
+            if password and password_confirm:
+                user_to_edit.set_password(password)
+            user_to_edit.first_name = first_name
+            user_to_edit.last_name = last_name
+            user_to_edit.save()
+            user_to_edit.person.nickname=nickname
+            user_to_edit.person.chosen_title=chosen_title
+            user_to_edit.person.date_of_birth=date_of_birth
+            user_to_edit.person.vat=vat
+            user_to_edit.person.phone_number=phone_number
+            user_to_edit.person.log_date_last_update=timezone.now()
+            user_to_edit.person.save()
+            titles = user_to_edit.person.unlocked_titles.filter(log_is_active__exact=True)
+            return render(request, 'boardgamecafe/userdetails.html',
+                          {'user_to_view': user_to_edit, 'titles': titles, 'date_of_birth': date_of_birth, })
+        titles = user_to_edit.person.unlocked_titles.filter(log_is_active__exact=True)
+        date_of_birth = user_to_edit.person.date_of_birth.strftime('%Y-%m-%d')
+        return render(request, 'boardgamecafe/userdetails.html', {'error_message': error_message, 'user_to_view': user_to_edit, 'titles': titles, 'date_of_birth': date_of_birth,})
+    titles = request.user.person.unlocked_titles.filter(log_is_active__exact=True)
+    date_of_birth = request.user.person.date_of_birth.strftime('%Y-%m-%d')
+    return render(request, 'boardgamecafe/userdetails.html',
+                  {'error_message': "Error editing user. Showing your user details.", 'user_to_view': request.user, 'titles': titles, 'date_of_birth': date_of_birth,})
 
 # Templates
 def tempband(request):

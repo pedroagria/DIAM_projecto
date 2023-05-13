@@ -1,0 +1,27 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>New Booking</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center w3-container" style="padding:128px">
+
+        <h1>PERSONAL AREA</h1>
+
+        <div class="w3-margin-top">
+            <div class="w3-third">
+                <a href="" class="w3-tag-large w3-green w3-margin-left w3-margin-right hide-underline-color" id="setp1_tag">Bookings</a>
+                <p id="setp1_text"> Check your bookings </p>
+            </div>
+            <div class="w3-third">
+                <a class="w3-tag-large w3-green w3-margin-left w3-margin-right hide-underline-color" id="setp2_tag" href={% url 'boardgamecafe:userdetails' %}>User Details</a>
+                <p id="setp2_text"> Check your user details </p>
+            </div>
+            <div class="w3-third">
+                <a class="w3-tag-large w3-green w3-margin-left w3-margin-right hide-underline-color" id="setp3_tag" href={% url 'boardgamecafe:titles' %}>Title List</a>
+                <p id="setp3_text"> Check your locked and unlocked titles </p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

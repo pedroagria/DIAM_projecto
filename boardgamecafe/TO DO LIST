@@ -1,12 +1,10 @@
-TODO - Implementar tipo de utilizador e permissões - SO FALTA CONFIGURAR A "TUA" PARTE - NAO QUIS MEXER PARA NAO TE DAR DEMASIADO TRABALHO. USA O USER pedro PASS password para criar um superuser para ti se quiseres
-TODO - Implementar dados pessoais
-TODO - Implementar página de detalhe de jogos com comentários e pontuação de review – SO FALTA APAGAR COMENTARIOS
-TODO - Implementar menu de comidas e bebidas (não tem urgência)
-TODO - Implementar calendário – admin – claudia
-TODO - Implementar reserva do utilizador e vê-la
-TODO - Implementar parte do REACT
-TODO - Atribuir título a uma pessoa enquanto admin
-TODO - A data da BD está com uma hora de diferença em relação à nossa. Corrigimos?
+TODO - Atribuir título a uma pessoa enquanto admin - PEDRO
+TODO - Adicionar preço de reversa (booking_price e total_price). Definir um preço por pessoa por hora (3 euros?) e multiplicar para obter booking_price e total_price (o total ia aumentando com os produtos consumidos, mas neste momento é para ignorar)
+TODO - Ver detalhes de reservas (QUER COMO ADMIN QUER COMO USER) - CLAUDIA
+TODO - Utilizador ver as suas reservas - CLAUDIA?
+TODO - Implementar parte do REACT - JUNTOS NO FIM
+TODO - Implementar tipo de utilizador e permissões - CONFIGURAR O QUE FALTA
+TODO - A data da BD está com uma hora de diferença em relação à nossa e nota-se quando se fazem alterações. - CAGAMOS?
 
 Já está:
 Lista de jogos
@@ -18,3 +16,11 @@ Implementar login
 Implementar registo
 Implementar login
 Implementar registo
+Implementar dados pessoais
+Implementar calendário
+Implementar reserva do utilizador
+Implementar admin ver lista de reservas
+
+A cair:
+TODO - Implementar menu de comidas e bebidas (não tem urgência)
+TODO - Implementar página de detalhe de jogos com comentários e pontuação de review – SO FALTA APAGAR COMENTARIOS

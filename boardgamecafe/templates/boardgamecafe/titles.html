@@ -3,6 +3,10 @@
 
 {% block content %}
 
+{% block title %}
+    <title>Titles</title>
+{% endblock %}
+
 <section class="w3-light-grey w3-center w3-container" style="padding:128px">
 
     <h1>TITLES</h1>
@@ -10,10 +14,14 @@
     {% if user.is_superuser %}
         <a class="w3-green w3-button w3-center w3-right" href="{%  url 'boardgamecafe:addtitle' %}">Add Title</a>
         <br>
+        <div hidden>
+            <input name="user_id" id="user_id" value={{ selected_user }} required>
+        </div>
+
     {% endif %}
 
     {% if titles %}
-    <p> Check all available and unlocked titles.</p>
+    <p> Check all available and unlocked titles</p>
 
     <div class="w3-container w3-content w3-padding-64 w3-center" >
         <ul class="w3-ul w3-border w3-white w3-text-grey">
@@ -32,7 +40,13 @@
                 {% else %}
                     <span class="w3-tag w3-red w3-margin-left w3-margin-right">Inactive Title</span>
                 {% endif %}
-                <a class="w3-green w3-button w3-right-align w3-margin-left w3-margin-right" href="{%  url 'boardgamecafe:edittitle' title.id %}">Edit Title</a>
+                {% if show_edit  %}
+                    <a class="w3-green w3-button w3-right-align w3-margin-left w3-margin-right" href="{%  url 'boardgamecafe:edittitle' title.id %}">Edit Title</a>
+                {%  endif %}
+                <form action="{% url 'boardgamecafe:titles' %}" method="post">
+                    {% csrf_token %}
+                    <button class="form_crude_btn w3-button w3-center" name="user_id_title_id" id="user_id_title_id" value="{{ selected_user.id }} {{ title.id }}">Titles</button>
+                </form>
             </li>
             {% elif title.log_is_active %}
             <li class="w3-padding w3-left-align">
