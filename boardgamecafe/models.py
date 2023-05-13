@@ -92,6 +92,8 @@ class Booking(models.Model):
     calendar = models.ForeignKey(Calendar, on_delete=models.RESTRICT)
     start_time = models.TimeField()
     end_time = models.TimeField()
+    booking_price = models.DecimalField(validators=[MinValueValidator(0)], max_digits=7, decimal_places=2)
+    total_price = models.DecimalField(validators=[MinValueValidator(0)], max_digits=7, decimal_places=2)
     value_paid = models.DecimalField(validators=[MinValueValidator(0)], max_digits=7, decimal_places=2) # dá 99999.99 euros, acho que mesmo na loucura é suficiente para o efeito
     is_paid = models.BooleanField()
     log_is_active = models.BooleanField()
