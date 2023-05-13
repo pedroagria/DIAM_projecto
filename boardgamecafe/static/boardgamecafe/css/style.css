@@ -156,90 +156,6 @@ tr {
     border-bottom: 1px solid #ccc;
 }
 
-
-/* ADAPTED FROM WEB */
-.form_crude {
-  text-align: center;
-}
-
-.form_crude * {
-  box-sizing: border-box;
-  line-height: 1.5;
-}
-
-.form_crude_item {
-  display: flex;
-  flex-direction: column;
-}
-
-.form_crude_item > * {
-  align-self: flex-start;
-}
-
-.form_crude_item_checkbox {
-  flex-direction: row;
-}
-
-.form_crude_label {
-  font-weight: 600;
-  padding: 10px 0;
-}
-
-.form_crude_input {
-  -webkit-appearance: none;
-  width: 100%;
-  max-width: 425px;
-  min-height: calc(0.9em + (0.8em * 2) + 0.6em);
-  padding: 0.8em;
-  font-size: 0.9em;
-  font-family: "Raleway", sans-serif;
-  outline: none;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-  background: #f9f9f9;
-  transition: background 0.25s, border-color 0.25s, color 0.25s;
-}
-
-.form_crude_input--small {
-  max-width: 300px;
-}
-
-.form_crude_input--big {
-  max-width: 1300px;
-}
-
-.form-gigantic-comment {
-  max-width: 9999px;
-  width: 100%;
-  font-size: 16px;
-}
-
-.form_crude_input:focus {
-  background: #ffffff;
-}
-
-.form_crude_input::placeholder {
-  color: #bbbbbb;
-}
-
-textarea.form_crude_input {
-  min-height: 200px;
-}
-
-.form_crude_btn {
-  font-weight: 600;
-  font-size: 1.1em;
-  padding: 10px 16px;
-  margin: 10px 0;
-  color: #ffffff;
-  background: #14b64a;
-}
-
-.form_crude_btn:active {
-  background: #0fa942;
-}
-
-
 /*CSS CODE IMPORTED FROM W3SCHOOLS TEMPLATES*/
 html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}
 h1,h2,h3,h4,h5,h6{font-family:"Segoe UI",Arial,sans-serif;font-weight:400;margin:10px 0}.w3-wide{letter-spacing:4px}
@@ -323,3 +239,86 @@ h1,h2,h3,h4,h5,h6{font-family:"Segoe UI",Arial,sans-serif;font-weight:400;margin
 .w3-text-light-green,.w3-hover-text-light-green:hover{color:#8bc34a!important}
 .w3-text-indigo,.w3-hover-text-indigo:hover{color:#3f51b5!important}
 .w3-text-grey,.w3-hover-text-grey:hover,.w3-text-gray,.w3-hover-text-gray:hover{color:#757575!important}
+
+/* ADAPTED FROM WEB */
+.form_crude {
+  text-align: center;
+}
+
+.form_crude * {
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.form_crude_item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form_crude_item > * {
+  align-self: flex-start;
+}
+
+.form_crude_item_checkbox {
+  flex-direction: row;
+}
+
+.form_crude_label {
+  font-weight: 600;
+  padding: 10px 0;
+}
+
+.form_crude_input {
+  -webkit-appearance: none;
+  width: 100%;
+  max-width: 425px;
+  min-height: calc(0.9em + (0.8em * 2) + 0.6em);
+  padding: 0.8em;
+  font-size: 0.9em;
+  font-family: "Raleway", sans-serif;
+  outline: none;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  background: #f9f9f9;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+}
+
+.form_crude_input--small {
+  max-width: 300px;
+}
+
+.form_crude_input--big {
+  max-width: 1300px;
+}
+
+.form-gigantic-comment {
+  max-width: 9999px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.form_crude_input:focus {
+  background: #ffffff;
+}
+
+.form_crude_input::placeholder {
+  color: #bbbbbb;
+}
+
+textarea.form_crude_input {
+  min-height: 200px;
+}
+
+.form_crude_btn {
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 10px 16px;
+  margin: 10px 0;
+  color: #ffffff;
+  background: #14b64a;
+}
+
+.form_crude_btn:active {
+  background: #0fa942;
+}
+
