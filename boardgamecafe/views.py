@@ -8,11 +8,7 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
-
-
 from django.core.files.storage import FileSystemStorage
-#from django.http import HttpResponse
-
 
 def index(request):
     return render(request, 'boardgamecafe/index.html')
@@ -215,13 +211,26 @@ def editgame(request, boardgame_id):
 
 @login_required
 def titles(request):
-    # RECECAO DE POST - user_id_title_id
     if request.method == 'POST':
+        user_id_title_id = request.POST.get('user_id_title_id')
+        if user_id_title_id and request.user.is_superuser:
+            split_user_id_title_id = user_id_title_id.split(" ")
+            selected_user_id = split_user_id_title_id[0]
+            selected_user = get_object_or_404(User, pk=selected_user_id)
+            selected_title_id = split_user_id_title_id[1]
+            selected_title = get_object_or_404(Title, pk=selected_title_id)
+            title_found = selected_user.person.unlocked_titles.all().filter(id=selected_title_id)
+            if title_found:
+                selected_user.person.unlocked_titles.remove(title_found[0])
+            else:
+                selected_user.person.unlocked_titles.add(selected_title)
+            show_edit = True;
         selected_user_id = request.POST.get('selected_user_id')
-        selected_user = get_object_or_404(User, pk=selected_user_id)
-        if not request.user.is_superuser and selected_user != request.user:
-            selected_user = request.user
-        show_edit = False;
+        if(selected_user_id):
+            selected_user = get_object_or_404(User, pk=selected_user_id)
+            if not request.user.is_superuser and selected_user != request.user:
+                selected_user = request.user
+            show_edit = False;
     else:
         selected_user = request.user
         show_edit = True;
@@ -373,7 +382,6 @@ def addtable(request):
         return HttpResponseRedirect(reverse('boardgamecafe:index'))
     return render(request, 'boardgamecafe/managetable.html', {'error_message': "Error adding new table. Be sure that all fields are filled correctly."})
 
-
 def edittable(request, table_id):
     table = get_object_or_404(Table, pk=table_id)
     if not request.method == 'POST':
@@ -391,7 +399,6 @@ def edittable(request, table_id):
         table.save()
         return HttpResponseRedirect(reverse('boardgamecafe:tables'))
     return render(request, 'boardgamecafe/managetable.html', {'table': table, 'error_message': "Error editing table. Be sure that all fields are filled correctly."})
-
 
 def calendar(request):
     # Vai buscar todas as mesas à base de dados
