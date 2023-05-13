@@ -1,0 +1,25 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Booking Details</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center" style="padding:128px 16px">
+
+        <h1>BOOKING DETAILS</h1>
+        <p>Check the details of the booking</p>
+
+            <p> <b>Client:</b> {{ nickname }} </p>
+            <p> <b>Date:</b> {{ date }}</p>
+            <p> <b>Start Time:</b> {{ booking.start_time }}</p>
+            <p> <b>End Time:</b> {{ booking.end_time }}</p>
+            <p> <b>Table:</b> {{ table }}</p>
+            <p> <b>Boardgame:</b> {{ boardgame }}</p>
+            <h1> <b> Price: {{ booking.total_price }} €</b></h1>
+
+        <div class="form_crude_item">
+            <input class="form_crude_btn w3-button w3-red" type="button" value="Back" onclick="history.back()">
+        </div>
+    </section>
+{% endblock %}

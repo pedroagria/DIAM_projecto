@@ -1,0 +1,68 @@
+{% extends "boardgamecafe/template.html" %}
+{% load static %}
+{% block title %}
+    <title>Booking User</title>
+{% endblock %}
+
+{% block content %}
+    <section class="w3-light-grey w3-center w3-container" style="padding:128px 16px">
+
+        <h1>BOOKINGS</h1>
+        <p>Check your booking details</p>
+
+        {% if bookings %}
+
+            <div>
+                <table>
+                    <tr>
+                        <td> <b> Id </b> </td>
+                        <td> <b> Date </b> </td>
+                        <td> <b> Start time </b> </td>
+                        <td> <b> End time </b> </td>
+                        <td> <b> Table </b> </td>
+                        <td> <b> Boardgame </b> </td>
+                        <td> <b> Price </b> </td>
+                    </tr>
+                    {% for b in bookings %}
+                        <tr>
+                            <td> <a href="{% url 'boardgamecafe:bookingdetails' b.id %}"> {{b.id}} </a></td>
+                            {% for d in dates %}
+                                {% if b.calendar_id == d.id %}
+                                    <td> {{ d.date }} </td>
+                                {% endif %}
+                            {% endfor %}
+                            <td> {{b.start_time}} </td>
+                            <td> {{b.end_time}} </td>
+                            {% for t in tables %}
+                                {% if b.table_id == t.id %}
+                                    <td> {{ t.name }} </td>
+                                {% endif %}
+                            {% endfor %}
+                            {% for g in boardgames %}
+                                {% if b.boardgame_id == g.id %}
+                                    <td> {{ g.name }} </td>
+                                {% endif %}
+                            {% endfor %}
+                            <td> {{b.total_price}} € </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        {% else %}
+            <p> No bookings have been made yet! </p>
+        {% endif %}
+
+{#            <p> <b>Client:</b> {{ nickname }} </p>#}
+{#            <p> <b>Date:</b> {{ date }}</p>#}
+{#            <p> <b>Start Time:</b> {{ booking.start_time }}</p>#}
+{#            <p> <b>End Time:</b> {{ booking.end_time }}</p>#}
+{#            <p> <b>Table:</b> {{ table }}</p>#}
+{#            <p> <b>Boardgame:</b> {{ boardgame }}</p>#}
+{#            <h1> <b> Price: {{ booking.total_price }} €</b></h1>#}
+
+        <div class="form_crude_item">
+            <input class="form_crude_btn w3-button w3-red" type="button" value="Back" onclick="history.back()">
+        </div>
+    </section>
+{% endblock %}

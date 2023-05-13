@@ -28,7 +28,7 @@
                                 {%  if b.link == "Free"  %}
                                     {{b.link}}
                                 {% else %}
-                                    <a href="{% url 'boardgamecafe:index' %}"> {{b.link}} </a>
+                                    <a href="{% url 'boardgamecafe:bookingdetails' b.link %}"> {{b.link}} </a>
                                 {% endif %}
                             </td>
                             <td> {{b.nickname}} </td>

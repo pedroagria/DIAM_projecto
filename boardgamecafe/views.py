@@ -617,9 +617,12 @@ def newbooking3(request):
     # print(data_booking3)
     data_booking3.append(request.POST.get('chosen_game'))
     # print(data_booking3)
-    print("data_booking", data_booking)
-    print("data_booking2", data_booking2)
-    print("data_booking3", data_booking3)
+    # print("data_booking", data_booking)
+    # print("data_booking2", data_booking2)
+    # print("data_booking3", data_booking3)
+    start_hour = data_booking[1].split(':')[0]
+    end_hour = data_booking[2].split(':')[0]
+    price = (int(end_hour) - int(start_hour)) * int(data_booking[3]) * 3
     date = datetime.strptime(data_booking[0], '%Y-%m-%d').date()
     table_obj = Table.objects.filter(id=data_booking2[0])
     table_name = []
@@ -629,7 +632,7 @@ def newbooking3(request):
     game_name = []
     for i in game_obj:
         game_name = i.name
-    return render(request, 'boardgamecafe/newbooking4.html', {'date': date,'start_time': data_booking[1], 'end_time': data_booking[2], 'boardgame': game_name, 'table': table_name})
+    return render(request, 'boardgamecafe/newbooking4.html', {'date': date,'start_time': data_booking[1], 'end_time': data_booking[2], 'boardgame': game_name, 'table': table_name, 'price': price})
 
 
 def newbooking4(request):
@@ -644,6 +647,8 @@ def newbooking4(request):
     start_time = datetime.strptime(data_booking[1], '%H:%M').time()
     end_time = datetime.strptime(data_booking[2], '%H:%M').time()
     value_paid = 0
+    booking_price = (int(end_hour) - int(start_hour)) * int(data_booking[3]) * 3
+    total_price = (int(end_hour) - int(start_hour)) * int(data_booking[3]) * 3
     is_paid = False
     log_is_active = True
     log_date_created = datetime.now()
@@ -653,12 +658,12 @@ def newbooking4(request):
     person_id = request.user.person.id
     table_id = int(data_booking2[0])
     # Procura o id do calendário para a data escolhida pelo utilizador
-    start_hour = data_booking[1].split(':')[0]
-    end_hour = data_booking[2].split(':')[0]
-    date_obj = getcalendardate(start_hour, end_hour)
-    date_id = []
-    for d in date_obj:
-        date_id = d["id"]
+    # start_hour = data_booking[1].split(':')[0]
+    # end_hour = data_booking[2].split(':')[0]
+    # date_obj = getcalendardate(start_hour, end_hour)
+    # date_id = []
+    # for d in date_obj:
+    #     date_id = d["id"]
     # Procura as reservas para a data hora escolhida pelo utilizador
     if date_id:
         booking_date = getbookings(start_hour, end_hour, date_id)
@@ -681,7 +686,7 @@ def newbooking4(request):
     booking = Booking(start_time=start_time, end_time=end_time, value_paid=value_paid, is_paid=is_paid,
                       log_is_active=log_is_active, log_date_created=log_date_created,
                       log_date_last_update=log_date_last_update, boardgame_id=boardgame_id, calendar_id=calendar_id,
-                      person_id=person_id, table_id=table_id)
+                      person_id=person_id, table_id=table_id, booking_price=booking_price, total_price=total_price)
     booking.save()
     return render(request, 'boardgamecafe/index.html')
 
@@ -690,8 +695,37 @@ def bookingerror(request):
     return render(request, 'boardgamecafe/bookingerror.html')
 
 
+def bookingdetails(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+    date_obj = Calendar.objects.filter(id=booking.calendar_id).values("date")
+    date = ""
+    for d in date_obj:
+        date = d['date']
+    person_obj = Person.objects.filter(id=booking.person_id).values("nickname")
+    nickname = ""
+    for p in person_obj:
+        nickname = p['nickname']
+    table_obj = Table.objects.filter(id=booking.table_id).values("name")
+    table = ""
+    for t in table_obj:
+        table = t['name']
+    boardgame_obj = BoardGame.objects.filter(id=booking.boardgame_id).values("name")
+    boardgame = ""
+    for b in boardgame_obj:
+        boardgame = b['name']
+    return render(request, 'boardgamecafe/bookingdetails.html', {'booking': booking, 'date': date, 'nickname': nickname, 'table': table, 'boardgame': boardgame})
 
 
+def bookinguser(request):
+    person_id = request.user.person.id
+    bookings = Booking.objects.filter(person_id=person_id).values('id', 'start_time', 'end_time', 'boardgame_id', 'calendar_id', 'table_id', 'total_price')
+    if bookings.count() > 0:
+        dates = Calendar.objects.all()
+        boardgames = BoardGame.objects.all()
+        tables = Table.objects.all()
+        return render(request, 'boardgamecafe/bookinguser.html', {'bookings': bookings, 'dates': dates, 'boardgames': boardgames, 'tables': tables})
+    else:
+        return render(request, 'boardgamecafe/bookinguser.html', {'bookings': bookings})
 
 
 

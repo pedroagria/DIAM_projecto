@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout', views.signout, name='logout'),
     path('personalarea', views.personalarea, name='personalarea'),
     path('userdetails', views.userdetails, name='userdetails'),
+    path('bookinguser', views.bookinguser, name='bookinguser'),
 
     # admin management
     path('users', views.users, name='users'),
@@ -37,6 +38,7 @@ urlpatterns = [
     path('newbooking3', views.newbooking3, name='newbooking3'),
     path('newbooking4', views.newbooking4, name='newbooking4'),
     path('bookingerror', views.bookingerror, name='bookingerror'),
+    path('bookingdetails/<int:booking_id>', views.bookingdetails, name='bookingdetails'),
 
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
