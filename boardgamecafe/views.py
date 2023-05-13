@@ -524,6 +524,68 @@ def signup(request):
         return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
     return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
 
+#superuse defaults to true in permission regardless of its existance
+@permission_required('user.create_superuser', raise_exception=True)
+@login_required
+def createotheruser(request):
+    if not request.method == 'POST':
+        titles = Title.objects.all().filter(unlock_conditions__exact="None", log_is_active__exact=True)
+        return render(request, 'boardgamecafe/signup.html', {'titles': titles})
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    nickname = request.POST.get('nickname')
+    chosen_title_id = request.POST.get('chosen_title') # REVER
+    date_of_birth = request.POST.get('date_of_birth')
+    email = request.POST.get('email')
+    vat = request.POST.get('vat')
+    phone_number = request.POST.get('phone_number')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    password_confirm = request.POST.get('password_confirm')
+    if first_name and last_name and nickname and chosen_title_id and date_of_birth and email and vat and phone_number and username and password and password_confirm:
+        error_message = "Error registering new user. "
+        error_occured = False
+        all_users = User.objects.all()
+        for user in all_users:
+            if user.username == username:
+                if error_occured:
+                    error_message += "<br>"
+                error_occured = True
+                error_message += "The username " + username + " already exists."
+            if user.email == email:
+                if error_occured:
+                    error_message += "<br>"
+                error_occured = True
+                error_message += "The email " + email + " already exists."
+        if password != password_confirm:
+            if error_occured:
+                error_message += "<br>"
+            error_occured = True
+            error_message += "The password does not match the confirmation password."
+        try:
+            chosen_title = Title.objects.get(pk=chosen_title_id)
+        except Title.DoesNotExist:
+            if error_occured:
+                error_message += "<br>"
+            error_occured = True
+            error_message += "The chosen title does not exist."
+        if not error_occured:
+            if request.POST.get('is_superuser'):
+                new_user = User.objects.create_superuser(username, email, password)
+            else:
+                new_user = User.objects.create_user(username, email, password)
+            new_user.first_name = first_name
+            new_user.last_name = last_name
+            new_user.save()
+            person = Person(user=new_user, nickname=nickname, chosen_title=chosen_title, date_of_birth=date_of_birth, vat=vat, phone_number=phone_number, log_is_active=True, log_date_created=timezone.now(), log_date_last_update=timezone.now())
+            person.save()
+            titles = Title.objects.all().filter(unlock_conditions__exact="None")
+            for title in titles:
+                person.unlocked_titles.add(title)
+            return HttpResponseRedirect(reverse('boardgamecafe:index'))
+        return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
+    return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
+
 def signin(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('boardgamecafe:index'))

@@ -11,7 +11,11 @@
         <p class="w3-red">{{ error_message }}</p>
     {% endif %}
 
-    <form class="form_crude" method="POST" action="{% url 'boardgamecafe:signup' %}">
+    {% if user.is_superuser %}
+        <form class="form_crude" method="POST" action="{% url 'boardgamecafe:createotheruser' %}">
+    {% else %}
+        <form class="form_crude" method="POST" action="{% url 'boardgamecafe:signup' %}">
+    {% endif %}
         {% csrf_token %}
         <div class="form_crude_item">
             <label for="first_name" class="form_crude_label">First Name</label>
@@ -61,10 +65,12 @@
             <label for="password_confirm" class="form_crude_label">Confirm Password</label>
             <input type="password" class="form_crude_input" name="password_confirm" id="password_confirm" placeholder="Enter the chosen password again to confirm" required>
         </div>
-        <div class="form_crude_item form_crude_item_checkbox">
-            <label for="is_superuser" class="form_crude_label">The user is an admin</label>
-            <input type="checkbox" name="is_superuser" id="is_superuser">
-        </div>
+        {% if user.is_superuser %}
+            <div class="form_crude_item form_crude_item_checkbox">
+                <label for="is_superuser" class="form_crude_label">The user is an admin</label>
+                <input type="checkbox" name="is_superuser" id="is_superuser">
+            </div>
+        {% endif %}
         <div class="form_crude_item">
             <button class="form_crude_btn w3-button" type="submit">Sign up</button>
         </div>

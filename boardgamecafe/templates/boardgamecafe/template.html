@@ -24,6 +24,9 @@
                 <a href={% url 'boardgamecafe:titles' %} class="w3-bar-item w3-button"> TITLES</a>
                 <a href="#contact" class="w3-bar-item w3-button"> CONTACT</a>
             {% if user.is_authenticated %}
+                {% if user.is_superuser %}
+                    <a href={% url 'boardgamecafe:createotheruser' %} class="w3-bar-item w3-button"> CREATE OTHER USER</a>
+                {% endif %}
                 <a href="#personal_area" class="w3-bar-item w3-button"> PERSONAL AREA</a>
                 <a href={% url 'boardgamecafe:logout' %} class="w3-bar-item w3-button"> LOG OUT</a>
             {% else %}
