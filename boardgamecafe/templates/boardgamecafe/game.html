@@ -5,7 +5,6 @@
 <section class="w3-light-grey w3-center w3-container" style="padding:128px">
 
     <h1>{{ boardgame.name.upper }} ({{ boardgame.release_year }})</h1>
-{#    <p> Edit the data of the chosen board game </p>#}
 
     {% if error_message %}
         <p class="w3-red">{{ error_message }}</p>
@@ -99,9 +98,7 @@
         <a class="w3-button w3-center w3-white" href="{% url 'boardgamecafe:signin' %}">Add Comment</a>
     {% endif %}
 
-
-{#    ESTES COMENTARIOS DEVEM SER CRIADOS COM UM FOR DOS COMENTARIOS QUE VIEREM DA BASE DE DADOS#}
-    {#    TAMBEM DEVE SER CRIADO UM BOTAO PARA ELIMINAR COMENTARIOS QUE NA REALIDADE TIRA-OS DE ACTIVOS; SÓ NOS COMENTÁRIOS DO UTILIZADOR#}
+    {#    TAMBEM DEVE SER CRIADO UM BOTAO PARA ELIMINAR COMENTARIOS QUE NA REALIDADE TIRA-OS DE ACTIVOS; SÓ NOS COMENTÁRIOS DO UTILIZADOR E PARA ADMIN#}
     {% if comments %}
         {% for comment in comments %}
             <article class="w3-container w3-card w3-white w3-round w3-margin w3-center"><br>

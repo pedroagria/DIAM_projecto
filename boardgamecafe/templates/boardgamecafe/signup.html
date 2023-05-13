@@ -13,22 +13,18 @@
 
     <form class="form_crude" method="POST" action="{% url 'boardgamecafe:signup' %}">
         {% csrf_token %}
-{#    FIRST NAME#}
         <div class="form_crude_item">
             <label for="first_name" class="form_crude_label">First Name</label>
             <input type="text" maxlength="50" class="form_crude_input" name="first_name" id="first_name" placeholder="Enter your first name (Max. 50 characters)" required>
         </div>
-{#    LAST NAME#}
         <div class="form_crude_item">
             <label for="last_name" class="form_crude_label">Last Name</label>
         <input type="text" maxlength="50" class="form_crude_input" name="last_name" id="last_name" placeholder="Enter your last name (Max. 50 characters)" required>
         </div>
-    {#    NICKNAME#}
         <div class="form_crude_item">
             <label for="nickname" class="form_crude_label">Nickname</label>
             <input type="text" maxlength="50" class="form_crude_input" name="nickname" id="nickname" placeholder="Enter the name you want to be known for (Max. 50 characters)" required>
         </div>
-{#    DROPDOWN TO CHOOSE TITLE, RECEIVE FROM CONTEXT - DAMN, NEED TO CREATE TITLE FIRST...#}
         <div class="form_crude_item">
             <label for="chosen_title" class="form_crude_label">Chosen Title</label>
             <select class="form_crude_input form-dropdown" name="chosen_title" id="chosen_title" required>
@@ -37,33 +33,26 @@
                 {% endfor %}
             </select>
         </div>
-{#        DATE OF BIRTH - ESTE CAMPO AINDA NAO FOI TWINKADO#}
         <div class="form_crude_item">
             <label for="date_of_birth" class="form_crude_label">Date of Birth</label>
             <input type="date" class="form_crude_input form_crude_input--small" name="date_of_birth" id="date_of_birth" max="3000-01-01" required>
         </div>
-
-{#    EMAIL TESTAR SE JA EXISTE#}
         <div class="form_crude_item">
             <label for="email" class="form_crude_label">E-mail</label>
             <input type="email" class="form_crude_input form_crude_input--small" name="email" id="email" placeholder="Enter your email" required>
         </div>
-{#    VAT#}
         <div class="form_crude_item">
             <label for="vat" class="form_crude_label">VAT</label>
             <input type="text" maxlength="15" class="form_crude_input form_crude_input--small" name="vat" id="vat" placeholder="Enter your tax ID" required>
         </div>
-{#    PHONENUMBER - TESTAR e ALTERAR O PATTERN#}
         <div class="form_crude_item">
             <label for="phone_number" class="form_crude_label">Phone number</label>
             <input type="tel" class="form_crude_input form_crude_input--small" name="phone_number" id="phone_number" pattern="^([0]{2}[1-9]{1,3})?([\+][0-9]{1,3})?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$" placeholder="Enter your phone number" required>
         </div>
-{#    USERNAME - TESTAR SE JA EXISTE#}
         <div class="form_crude_item">
             <label for="username" class="form_crude_label">Username</label>
             <input type="text" class="form_crude_input" name="username" id="username" placeholder="Enter a username of your choosing" required>
         </div>
-{#    PASSWORD#}
         <div class="form_crude_item">
             <label for="password" class="form_crude_label">Password</label>
             <input type="password" class="form_crude_input" name="password" id="password" placeholder="Enter a password of your choosing" required>
@@ -72,7 +61,6 @@
             <label for="password_confirm" class="form_crude_label">Confirm Password</label>
             <input type="password" class="form_crude_input" name="password_confirm" id="password_confirm" placeholder="Enter the chosen password again to confirm" required>
         </div>
-{#    ADMIN#}
         <div class="form_crude_item form_crude_item_checkbox">
             <label for="is_superuser" class="form_crude_label">The user is an admin</label>
             <input type="checkbox" name="is_superuser" id="is_superuser">

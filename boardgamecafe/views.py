@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime, timedelta
-# from django.core import serializers
 import json
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
@@ -14,32 +13,21 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
 #from django.http import HttpResponse
 
-# Create your views here.
+
 def index(request):
     return render(request, 'boardgamecafe/index.html')
-    #return HttpResponse("<h1>Esta é a página de entrada da app boardgamecafe </h1>")
 
 def games(request):
-    # if BoardGame.objects.all().count() > 0:
-    # boardgames = BoardGame.objects.all()
-    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames})
-    # return render(request, 'boardgamecafe/games.html')
     all_boardgames = BoardGame.objects.all()
     boardgames_list = []
     for boardgame in all_boardgames:
-        # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
         new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(), 'log_is_active': boardgame.log_is_active}
         boardgames_list.append(new_boardgame)
     return render(request, 'boardgamecafe/games.html', {'boardgames': json.dumps(boardgames_list)})
-    # return render(request, 'boardgamecafe/games.html', {'boardgames': boardgames_list})
-    #
-    # boardgames_json = serializers.serialize('json', boardgames)
-    # return
+
 
 def game(request, boardgame_id):
-    # FALTA VER OS REVIEWS
     boardgame = get_object_or_404(BoardGame, pk=boardgame_id)
-        # Comment.objects.all().filter(log_is_active=True).order_by('-log_date_created')
     # SE NÃO FOR AUTENTICADO
     if not request.user.is_authenticated:
         boardgame_love_count = boardgame.boardgamelove_set.filter(log_is_active=True).count()
@@ -238,12 +226,6 @@ def titles(request):
         for title in all_titles:
             new_title = {'id': title.id, 'designation': title.designation, 'unlock_conditions': title.unlock_conditions, 'unlocked': request.user.person.unlocked_titles.filter(pk=title.id).exists(), 'log_is_active': title.log_is_active}
             titles.append(new_title)
-        # ENVIAR INFORMACAO SE O PERSON LOGIN TEM O TITLE
-    # boardgames_list = []
-    # for boardgame in all_boardgames:
-    #     # new_boardgame = [boardgame.id.__str__(), boardgame.name, boardgame.image.__str__()]
-    #     new_boardgame = {'id': boardgame.id, 'name': boardgame.name, 'min_players': boardgame.min_players, 'max_players': boardgame.max_players, 'min_age': boardgame.min_age, 'min_playing_time': boardgame.min_playing_time, 'image': boardgame.image.__str__(), 'log_is_active': boardgame.log_is_active}
-    #     boardgames_list.append(new_boardgame)
         return render(request, 'boardgamecafe/titles.html', {'titles': titles})
     return render(request, 'boardgamecafe/titles.html')
 
