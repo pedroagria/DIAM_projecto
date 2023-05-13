@@ -9,6 +9,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.storage import FileSystemStorage
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from .serializers import *
 
 def index(request):
     return render(request, 'boardgamecafe/index.html')
@@ -999,4 +1003,37 @@ def userdetails(request):
     date_of_birth = request.user.person.date_of_birth.strftime('%Y-%m-%d')
     return render(request, 'boardgamecafe/userdetails.html',
                   {'error_message': "Error editing user. Showing your user details.", 'user_to_view': request.user, 'titles': titles, 'date_of_birth': date_of_birth,})
+
+# REACT SECTION
+@api_view(['GET', 'POST'])
+def tables_list(request):
+    if request.method == 'GET':
+        tables = Table.objects.all()
+        serializerTable = TableSerializer(tables, context={'request': request}, many=True)
+        return Response(serializerTable.data)
+    elif request.method == 'POST':
+        serializer = TableSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT', 'DELETE'])
+def table_edit(request, pk):
+    try:
+        table = Table.objects.get(pk=pk)
+    except Table.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'PUT':
+        serializer = TableSerializer(table, data=request.data, context={'request':request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        table.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 

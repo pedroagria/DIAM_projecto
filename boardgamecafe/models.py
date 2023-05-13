@@ -1,9 +1,6 @@
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
-#from django.utils import timezone
-
-# tenho pena de não ter nenhuma relação muitos para muitos (algo a pensar!)
 
 class BoardGame(models.Model):
     name = models.CharField(max_length=50)
@@ -16,8 +13,8 @@ class BoardGame(models.Model):
     complexity = models.DecimalField(validators=[MinValueValidator(1), MaxValueValidator(5)], max_digits=3, decimal_places=2)
     number_of_copies = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField()
-    link = models.URLField() #default 200 character limit (can be changed)
-    image = models.ImageField()  # para adicionar imagens. Talvez seja preciso a Pillow library. We'll see.
+    link = models.URLField()
+    image = models.ImageField()
     log_is_active = models.BooleanField() # mudei o nome de isActive para isto
     log_date_created = models.DateTimeField() # adicionei para ficar com histórico de criação
     log_date_last_update = models.DateTimeField() # adicionei para se saber quando alguém mexeu

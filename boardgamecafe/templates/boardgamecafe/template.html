@@ -10,11 +10,9 @@
 </head>
 
 <header id="home">
-    <!-- Navbar (sit on top) -->
     <nav class="w3-top">
         <div class="w3-bar w3-white w3-card" id="myNavbar">
             <a href={% url 'boardgamecafe:index' %} class="w3-bar-item w3-button w3-wide">BOARD GAME CAFE</a>
-            <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small">
                 {% if user.is_superuser %}
                     <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:calendar' %}> CALENDAR</a>
@@ -38,7 +36,6 @@
             </div>
         </div>
     </nav>
-    <!-- Backgroud image -->
     {% block header %}
     <a href="{% url 'boardgamecafe:index' %}">
         <img class="img-index" src="{% static 'boardgamecafe/images/small_banner.png' %}" >
@@ -47,8 +44,6 @@
 </header>
 
 <body>
-
-    <!-- About Section -->
     {% block content %}
     <section class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
         <h3>ABOUT US</h3>
@@ -63,7 +58,6 @@
     </section>
     {% endblock %}
 
-    <!-- Footer -->
     <footer class="w3-center" id="contact" style="padding:128px 16px">
         <h3>CONTACT</h3>
         <p>Lets get in touch. Send us a message:</p>

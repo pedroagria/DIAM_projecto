@@ -1,0 +1,1 @@
+export const API_URL_TABLES = "http://localhost:8000/boardgamecafe/api/tables/";

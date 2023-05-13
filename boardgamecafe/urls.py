@@ -8,7 +8,6 @@ urlpatterns = [
     path('game/<int:boardgame_id>', views.game, name='game'),
     path('titles', views.titles, name='titles'),
 
-
     # sign in, sign up and personal area
     path('signup', views.signup, name='signup'),
     path('signin', views.signin, name='signin'),
@@ -38,4 +37,8 @@ urlpatterns = [
     path('newbooking4', views.newbooking4, name='newbooking4'),
     path('bookingerror', views.bookingerror, name='bookingerror'),
     path('bookingdetails/<int:booking_id>', views.bookingdetails, name='bookingdetails'),
+
+    # REACT
+    path('api/tables/', views.tables_list),
+    path('api/tables/<int:pk>', views.table_edit),
 ]
