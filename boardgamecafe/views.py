@@ -604,6 +604,7 @@ def newbooking4(request):
     date_id = []
     for d in date_obj:
         date_id = d["id"]
+    # Dados para criar reserva
     start_time = datetime.strptime(data_booking[1], '%H:%M').time()
     end_time = datetime.strptime(data_booking[2], '%H:%M').time()
     value_paid = 0
@@ -613,8 +614,34 @@ def newbooking4(request):
     log_date_last_update = datetime.now()
     boardgame_id = int(data_booking3[0])
     calendar_id = date_id
-    person_id = request.user.person
+    person_id = request.user.person.id
     table_id = int(data_booking2[0])
+    # Procura o id do calendário para a data escolhida pelo utilizador
+    start_hour = data_booking[1].split(':')[0]
+    end_hour = data_booking[2].split(':')[0]
+    date_obj = getcalendardate(start_hour, end_hour)
+    date_id = []
+    for d in date_obj:
+        date_id = d["id"]
+    # Procura as reservas para a data hora escolhida pelo utilizador
+    if date_id:
+        booking_date = getbookings(start_hour, end_hour, date_id)
+        # Lista das mesas ocupadas e dos jogos ocupados
+        not_available_tables_list = []
+        not_available_games_list = []
+        for b in booking_date:
+            not_available_tables_list.append(b['table_id'])
+            not_available_games_list.append(b['boardgame_id'])
+        # Verifica disponibilidade da mesa
+        if table_id in not_available_tables_list:
+            return render(request, 'boardgamecafe/bookingerror.html')
+        # Verifica disponibilidade do jogo
+        count_game = not_available_games_list.count(boardgame_id)
+        boardgame = BoardGame.objects.filter(id=boardgame_id)
+        for b in boardgame:
+            if count_game >= b.number_of_copies:
+                return render(request, 'boardgamecafe/bookingerror.html')
+    # Cria reserva
     booking = Booking(start_time=start_time, end_time=end_time, value_paid=value_paid, is_paid=is_paid,
                       log_is_active=log_is_active, log_date_created=log_date_created,
                       log_date_last_update=log_date_last_update, boardgame_id=boardgame_id, calendar_id=calendar_id,
@@ -623,11 +650,10 @@ def newbooking4(request):
     return render(request, 'boardgamecafe/index.html')
 
 
+def bookingerror(request):
+    return render(request, 'boardgamecafe/bookingerror.html')
 
-# opentime = datetime.strptime(request.POST.get('opentime'), '%H:%M').time()
-#         closetime = datetime.strptime(request.POST.get('closetime'), '%H:%M').time()
-# table = Table(name=name, capacity=capacity, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
-#         table.save()
+
 
 
 

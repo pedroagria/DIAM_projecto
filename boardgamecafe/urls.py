@@ -31,6 +31,7 @@ urlpatterns = [
     path('newbooking2', views.newbooking2, name='newbooking2'),
     path('newbooking3', views.newbooking3, name='newbooking3'),
     path('newbooking4', views.newbooking4, name='newbooking4'),
+    path('bookingerror', views.bookingerror, name='bookingerror'),
 
     #templates for inspiration
     path('tempband', views.tempband, name='tempband'),
