@@ -17,11 +17,13 @@
             <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small">
 {#                <a href="#about" class="w3-bar-item w3-button">ABOUT</a>#}
-                <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:calendar' %}> CALENDAR</a>
-                <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:tables' %}> TABLES </a>
+                {% if user.is_superuser %}
+                    <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:calendar' %}> CALENDAR</a>
+                    <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:tables' %}> TABLES </a>
+                {% endif %}
                 <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:newbooking' %}> NEW BOOKING</a>
                 <a class="w3-bar-item w3-button" href={% url 'boardgamecafe:games' %}> GAMES</a>
-                <a href="#pricing" class="w3-bar-item w3-button"> PRICING</a>
+{#                <a href="#pricing" class="w3-bar-item w3-button"> PRICING</a>#}
                 <a class="w3-bar-item w3-button" href="#contact"> CONTACT</a>
             {% if user.is_authenticated %}
                 {% if user.is_superuser %}

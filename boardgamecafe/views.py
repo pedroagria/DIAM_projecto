@@ -165,7 +165,7 @@ def addgame(request):
     return render(request, 'boardgamecafe/managegame.html', {'error_message': "Error adding new board game. Be sure that all fields are filled correctly."})
 
 @permission_required('boardgamecafe.change_boardgame', raise_exception=True)
-@login_required()
+@login_required
 def editgame(request, boardgame_id):
     boardgame = get_object_or_404(BoardGame, pk=boardgame_id)
     if not request.method == 'POST':
@@ -292,25 +292,25 @@ def edittitle(request, title_id):
     return render(request, 'boardgamecafe/managetitle.html',
                   {'title': title, 'error_message': "Error editing title. Be sure that all fields are filled correctly. Note that title 'None' can not be changed"})
 
+
+@permission_required('boardgamecafe.add_calendar', raise_exception=True)
+@permission_required('boardgamecafe.change_calendar', raise_exception=True)
+@login_required
 def addremovecalendar(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/managecalendar.html')
-
     if request.POST.get('log_is_active'):
         log_is_active = False
     else:
         log_is_active = True
-
     # Para adicionar registos
     if log_is_active:
         startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
         enddate = datetime.strptime(request.POST.get('enddate'), '%Y-%m-%d').date()
         numbers_days = (enddate - startdate).days + 1
         dates_to_add = [startdate + timedelta(days=x) for x in range(numbers_days)]
-
         opentime = datetime.strptime(request.POST.get('opentime'), '%H:%M').time()
         closetime = datetime.strptime(request.POST.get('closetime'), '%H:%M').time()
-
         weekdays = [False] * 7
         if request.POST.get('monday'):
             weekdays[0] = True
@@ -326,7 +326,6 @@ def addremovecalendar(request):
             weekdays[5] = True
         if request.POST.get('sunday'):
             weekdays[6] = True
-
         # Verifica se a data já está na base de dados, se sim actualiza os valores
         date_list_objects = Calendar.objects.all()
         aux = dates_to_add.copy()
@@ -342,14 +341,12 @@ def addremovecalendar(request):
                     calendar.log_date_last_update = timezone.now()
                     calendar.save()
                     aux.remove(d.date)
-
         # Para as datas que não existem na base de dados, cria novo registos
         for i in aux:
             i_weekday = i.weekday()  # segunda é 0 e domingo é 6
             if weekdays[i_weekday]:
                 calendar = Calendar(date=i, open_time=opentime, close_time=closetime, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
                 calendar.save()
-
     # Para remover registos
     else:
         startdate = datetime.strptime(request.POST.get('startdate'), '%Y-%m-%d').date()
@@ -364,9 +361,11 @@ def addremovecalendar(request):
                 calendar.log_is_active = log_is_active
                 calendar.log_date_last_update = timezone.now()
                 calendar.save()
-
     return render(request, 'boardgamecafe/managecalendar.html')
 
+
+@permission_required('boardgamecafe.add_table', raise_exception=True)
+@login_required
 def addtable(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/managetable.html')
@@ -379,9 +378,12 @@ def addtable(request):
     if name and capacity:
         table = Table(name=name, capacity=capacity, log_is_active=log_is_active, log_date_created=timezone.now(), log_date_last_update=timezone.now())
         table.save()
-        return HttpResponseRedirect(reverse('boardgamecafe:index'))
+        return HttpResponseRedirect(reverse('boardgamecafe:tables'))
     return render(request, 'boardgamecafe/managetable.html', {'error_message': "Error adding new table. Be sure that all fields are filled correctly."})
 
+
+@permission_required('boardgamecafe.change_table', raise_exception=True)
+@login_required
 def edittable(request, table_id):
     table = get_object_or_404(Table, pk=table_id)
     if not request.method == 'POST':
@@ -400,10 +402,13 @@ def edittable(request, table_id):
         return HttpResponseRedirect(reverse('boardgamecafe:tables'))
     return render(request, 'boardgamecafe/managetable.html', {'table': table, 'error_message': "Error editing table. Be sure that all fields are filled correctly."})
 
+
+@permission_required('boardgamecafe.view_calendar', raise_exception=True)
+@login_required
 def calendar(request):
     # Vai buscar todas as mesas à base de dados
     tables_list = Table.objects.all().filter(log_is_active=True)
-    # Vai buscar a data de hoje e coloca no formato yyyy-mm-dd (output é strin)
+    # Vai buscar a data de hoje e coloca no formato yyyy-mm-dd (output é string)
     today_str = datetime.strftime(datetime.now(), '%Y-%m-%d')
     # Coloca no formato datetime.date
     today_date = datetime.strptime(today_str, '%Y-%m-%d').date()
@@ -455,6 +460,9 @@ def allslots(date):
                 slots_list.append(aux2)
     return slots_list
 
+
+@permission_required('boardgamecafe.view_calendar', raise_exception=True)
+@login_required
 def nextdate(request, date_str, ispreviousdate_int):
     tables_list = Table.objects.all().filter(log_is_active=True)
     if ispreviousdate_int == 1:
@@ -473,7 +481,6 @@ def nextdate(request, date_str, ispreviousdate_int):
                 return render(request, 'boardgamecafe/calendar.html', {'date': nextdate})
     else:
         return render(request, 'boardgamecafe/calendar.html', {'date': nextdate})
-
 
 
 def getCalendar(slots_list, tables_list, booking_list):
@@ -501,8 +508,8 @@ def getCalendar(slots_list, tables_list, booking_list):
     return calendar_list
 
 
-
-
+@permission_required('boardgamecafe.view_table', raise_exception=True)
+@login_required
 def tables(request):
     if Table.objects.all().count() > 0:
         tables = Table.objects.all()
@@ -511,6 +518,7 @@ def tables(request):
 
 
 data_booking = []
+@login_required
 def newbooking(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/newbooking.html')
@@ -550,6 +558,7 @@ def newbooking(request):
 
 
 data_booking2 = []
+@login_required
 def newbooking2(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/newbooking2.html')
@@ -616,6 +625,7 @@ def getbookings(start_hour, end_hour, date_id):
 
 
 data_booking3 = []
+@login_required
 def newbooking3(request):
     if not request.method == 'POST':
         return render(request, 'boardgamecafe/newbooking3.html')
@@ -642,6 +652,7 @@ def newbooking3(request):
     return render(request, 'boardgamecafe/newbooking4.html', {'date': date,'start_time': data_booking[1], 'end_time': data_booking[2], 'boardgame': game_name, 'table': table_name, 'price': price})
 
 
+@login_required
 def newbooking4(request):
     # Procura o id do calendário para a data escolhida pelo utilizador
     start_hour = data_booking[1].split(':')[0]
@@ -698,12 +709,16 @@ def newbooking4(request):
     return render(request, 'boardgamecafe/index.html')
 
 
+@login_required
 def bookingerror(request):
     return render(request, 'boardgamecafe/bookingerror.html')
 
 
+@login_required
 def bookingdetails(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
+    if not request.user.is_superuser and booking.person != request.user.person:
+        HttpResponseRedirect(reverse('boardgamecafe:bookinguser'))
     date_obj = Calendar.objects.filter(id=booking.calendar_id).values("date")
     date = ""
     for d in date_obj:
@@ -723,6 +738,7 @@ def bookingdetails(request, booking_id):
     return render(request, 'boardgamecafe/bookingdetails.html', {'booking': booking, 'date': date, 'nickname': nickname, 'table': table, 'boardgame': boardgame})
 
 
+@login_required
 def bookinguser(request):
     person_id = request.user.person.id
     bookings = Booking.objects.filter(person_id=person_id).values('id', 'start_time', 'end_time', 'boardgame_id', 'calendar_id', 'table_id', 'total_price')
@@ -733,11 +749,6 @@ def bookinguser(request):
         return render(request, 'boardgamecafe/bookinguser.html', {'bookings': bookings, 'dates': dates, 'boardgames': boardgames, 'tables': tables})
     else:
         return render(request, 'boardgamecafe/bookinguser.html', {'bookings': bookings})
-
-
-
-
-
 
 
 # ADMIN USERS CHECK SECTION
@@ -812,9 +823,6 @@ def createuser(request):
     return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
 
 
-
-
-
 # SIGN IN, SIGN UP AND PERSONAL DATA SECTION
 def signup(request):
     if request.user.is_authenticated:
@@ -878,6 +886,7 @@ def signup(request):
         return render(request, 'boardgamecafe/signup.html', {'error_message': error_message})
     return render(request, 'boardgamecafe/signup.html', {'error_message': "Error registering new user. Be sure that all fields are filled correctly."})
 
+
 def signin(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('boardgamecafe:index'))
@@ -892,15 +901,18 @@ def signin(request):
           return HttpResponseRedirect(reverse('boardgamecafe:index'))
     return render(request, 'boardgamecafe/signin.html', {'error_message': "Error signing in. The username and password don't match. Try again."})
 
+
 @login_required
 def signout(request):
     logout(request)
     request.session.flush()
     return HttpResponseRedirect(reverse('boardgamecafe:index'))
 
+
 @login_required
 def personalarea(request):
     return render(request, 'boardgamecafe/personalarea.html')
+
 
 @login_required
 def userdetails(request):
@@ -986,24 +998,3 @@ def userdetails(request):
     return render(request, 'boardgamecafe/userdetails.html',
                   {'error_message': "Error editing user. Showing your user details.", 'user_to_view': request.user, 'titles': titles, 'date_of_birth': date_of_birth,})
 
-# Templates
-def tempband(request):
-    return render(request, 'boardgamecafe/tempband.html')
-
-def tempcafe(request):
-    return render(request, 'boardgamecafe/tempcafe.html')
-
-def tempfoodblog(request):
-    return render(request, 'boardgamecafe/tempfoodblog.html')
-
-def tempgourmetcatering(request):
-    return render(request, 'boardgamecafe/tempgourmetcatering.html')
-
-def tempstartpage(request):
-    return render(request, 'boardgamecafe/tempstartpage.html')
-
-def tempstartup(request):
-    return render(request, 'boardgamecafe/tempstartup.html')
-
-def tempsocialmedia(request):
-    return render(request, 'boardgamecafe/tempsocialmedia.html')

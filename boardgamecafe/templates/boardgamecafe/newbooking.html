@@ -82,7 +82,8 @@
         {# Garante que Open Time não é inferior à Close Time #}
         function endTimeBiggerThanStartTime() {
             var minToDate = document.getElementById("starttime").value;
-            document.getElementById("endtime").setAttribute("min", minToDate);
+            var minToDateMod = minToDate.substr(0, 3) + "59";
+            document.getElementById("endtime").setAttribute("min", minToDateMod);
         }
     </script>
 {% endblock %}

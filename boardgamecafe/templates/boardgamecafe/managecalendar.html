@@ -93,7 +93,8 @@
         {# Garante que Open Time não é inferior à Close Time #}
         function closeTimeBiggerThanOpenTime() {
             var minToDate = document.getElementById("opentime").value;
-            document.getElementById("closetime").setAttribute("min", minToDate);
+            var minToDateMod = minToDate.substr(0, 3) + "59";
+            document.getElementById("closetime").setAttribute("min", minToDateMod);
         }
         {# Bloquear Open Time, Close Time e Weekdays quando é para remover datas e mudar nome do botão #}
         $(document).ready(function () {
