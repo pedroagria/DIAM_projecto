@@ -11,34 +11,31 @@
         <a class="w3-green w3-button w3-center w3-right" href="{% url 'boardgamecafe:addremovecalendar' %}">Add Dates</a>
         <br>
         {% if dateobj %}
-            {% for d in dateobj %}
-                <p> {{ date }} </p>
-                <div>
-                    <table>
+            <p> {{ date }} </p>
+            <div>
+                <table>
+                    <tr>
+                        <td> <b> Hour </b> </td>
+                        <td> <b> Table Name </b> </td>
+                        <td> <b> Booking </b> </td>
+                        <td> <b> Client </b> </td>
+                    </tr>
+                    {% for b in calendar_list %}
                         <tr>
-                            <td> <b> Hour </b> </td>
-                            <td> <b> Table Name </b> </td>
-                            <td> <b> Booking </b> </td>
+                            <td> {{b.slot}} </td>
+                            <td> {{b.name}} </td>
+                            <td>
+                                {%  if b.link == "Free"  %}
+                                    {{b.link}}
+                                {% else %}
+                                    <a href="{% url 'boardgamecafe:index' %}"> {{b.link}} </a>
+                                {% endif %}
+                            </td>
+                            <td> {{b.nickname}} </td>
                         </tr>
-                        {% for s in slots_list %}
-                            <tr>
-                                <td> {{ s }} </td>
-                                <td>
-                                    {% for t in tables %}
-                                        <p> {{ t.name }} </p>
-                                    {% endfor %}
-                                </td>
-                                {# Todo - quando tiver as reservas feitas #}
-                                <td>
-                                    {% for t in tables %}
-                                        <p> Free </p>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            {% endfor %}
+                    {% endfor %}
+                </table>
+            </div>
         {% else %}
             <p> {{ date }} </p>
             <p> There is no calendar for this day </p>

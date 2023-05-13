@@ -390,8 +390,7 @@ def edittable(request, table_id):
 
 def calendar(request):
     # Vai buscar todas as mesas à base de dados
-    tables_list = alltables()
-
+    tables_list = Table.objects.all().filter(log_is_active=True)
     # Vai buscar a data de hoje e coloca no formato yyyy-mm-dd (output é strin)
     today_str = datetime.strftime(datetime.now(), '%Y-%m-%d')
     # Coloca no formato datetime.date
@@ -402,8 +401,10 @@ def calendar(request):
         for d in date:
             if d['log_is_active']:
                 slots_list = allslots(date)
-                return render(request, 'boardgamecafe/calendar.html',
-                              {'date': today_date, 'tables': tables_list, 'dateobj': date, 'slots_list': slots_list})
+                # Vai buscar reservas à base de dados para o dia actual
+                booking_list = Booking.objects.all().filter(log_is_active=True).filter(calendar_id=int(d['id']))
+                calendar_list = getCalendar(slots_list, tables_list, booking_list)
+                return render(request, 'boardgamecafe/calendar.html', {'date': today_date, 'dateobj': date, 'calendar_list': calendar_list})
             else:
                 return render(request, 'boardgamecafe/calendar.html', {'date': today_date})
     else:
@@ -438,11 +439,12 @@ def allslots(date):
                     aux = "0" + str(i) + ":00"
                 else:
                     aux = str(i) + ":00"
-                slots_list.append(aux)
+                aux2 = datetime.strptime(aux, '%H:%M').time()
+                slots_list.append(aux2)
     return slots_list
 
 def nextdate(request, date_str, ispreviousdate_int):
-    tables_list = alltables()
+    tables_list = Table.objects.all().filter(log_is_active=True)
     if ispreviousdate_int == 1:
         nextdate = newdate(date_str, True)
     else:
@@ -452,12 +454,41 @@ def nextdate(request, date_str, ispreviousdate_int):
         for d in date:
             if d['log_is_active']:
                 slots_list = allslots(date)
-                return render(request, 'boardgamecafe/calendar.html',
-                              {'date': nextdate, 'tables': tables_list, 'dateobj': date, 'slots_list': slots_list})
+                booking_list = Booking.objects.all().filter(log_is_active=True).filter(calendar_id=int(d['id']))
+                calendar_list = getCalendar(slots_list, tables_list, booking_list)
+                return render(request, 'boardgamecafe/calendar.html', {'date': nextdate, 'dateobj': date, 'calendar_list': calendar_list})
             else:
                 return render(request, 'boardgamecafe/calendar.html', {'date': nextdate})
     else:
         return render(request, 'boardgamecafe/calendar.html', {'date': nextdate})
+
+
+
+def getCalendar(slots_list, tables_list, booking_list):
+    calendar_list = []
+    global there_is_booking
+    there_is_booking = False
+    for s in slots_list:
+        for t in tables_list:
+            if booking_list:
+                count = 0
+                for b in booking_list:
+                    count = count + 1
+                    if t.id == b.table_id and b.start_time <= s and b.end_time > s:
+                        person = Person.objects.filter(id=b.person_id)
+                        for p in person:
+                            row = {'slot': s, 'name': t.name, 'link': str(b.id), 'nickname': p.nickname}
+                            calendar_list.append(row)  # quando existe reserva
+                        break
+                    if count == len(booking_list):
+                        row = {'slot': s, 'name': t.name, 'link': "Free", 'nickname': ""}
+                        calendar_list.append(row)  # quando existe reserva
+            else:
+                row = {'slot': s, 'name': t.name, 'link': "Free", 'nickname': ""}
+                calendar_list.append(row)  # quando existe reserva
+    return calendar_list
+
+
 
 
 def tables(request):
