@@ -52,7 +52,14 @@
     {% block content %}
     <section class="w3-container w3-light-grey w3-center" style="padding:128px 16px" id="about">
         <h3>ABOUT US</h3>
-        <p>Key features of our company</p>
+        <p>Board Game Café is a coffee house where the main attraction are board games!</p>
+        <p>Found in 2021, it has since become a popular attraction in Lisbon.</p>
+        <p>The decoration pulls you to a fantasy world where your imagination and achievements are king. Everything
+            has thematic names, from the tables to the food and drinks that go along with the more than 300 different
+            games we have.</p>
+        <p>Register, choose a title, make a reservation and soon you’ll unlock the right to be called John, Lord of
+            the Cosmos or Queen of Myths Jane.</p>
+        <p>We’ll be eagerly awaiting for the day you come roll the dice!</p>
     </section>
     {% endblock %}
 
@@ -60,9 +67,10 @@
     <footer class="w3-center" id="contact" style="padding:128px 16px">
         <h3>CONTACT</h3>
         <p>Lets get in touch. Send us a message:</p>
-        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/pin_icon.png' %}" > Rua Rodrigues Sampaio 146, 1150-882, Lisbon, PT</p>
-        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/phone_icon.png' %}" > +351 987654321</p>
-        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/mail_icon.png' %}" > boardgamecafe@mail.com</p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/pin_icon.png' %}" > Rua Rodrigues Sampaio 146, 1150-882, Lisbon, PT </p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/schedule_icon.png' %}" > 16h00 - 23h00 </p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/phone_icon.png' %}" > +351 987654321 </p>
+        <p> <img class="img-icon" src="{% static 'boardgamecafe/images/mail_icon.png' %}" > boardgamecafe@mail.com </p>
         {% block footer %}
             <img class="img-index" src="{% static 'boardgamecafe/images/location_with_pin2.png' %}" >
         {% endblock %}
